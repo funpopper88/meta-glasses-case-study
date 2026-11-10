@@ -2,10 +2,41 @@
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --color-ink: #0b0b0f;
-  --color-paper: #fafaf9;
-  --color-accent: #0866ff;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --color-ink: #03050a;
+  --color-rec: #ff3b3b;
+  --animate-rec: rec 1.4s ease-in-out infinite;
+
+  @keyframes rec {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.15; }
+  }
 }
 
-html { scroll-behavior: smooth; }
-body { @apply bg-paper text-ink antialiased; }
+html { scroll-behavior: smooth; background: #03050a; }
+body { @apply bg-ink text-white antialiased; }
+::selection { background: rgb(59 130 246 / 0.4); }
+
+.bg-grid {
+  background-image:
+    linear-gradient(rgb(96 165 250 / 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgb(96 165 250 / 0.07) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.text-gradient {
+  background: linear-gradient(100deg, #ffffff 10%, #93c5fd 55%, #3b82f6 95%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.card {
+  @apply rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm transition-colors;
+}
+.card:hover { @apply border-blue-400/30; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-rec { animation: none; }
+}

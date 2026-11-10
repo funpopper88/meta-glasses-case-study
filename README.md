@@ -1,15 +1,15 @@
-# Meta Glasses — Case Study
+# Meta Glasses · Trust & Safety
 
-React + Vite + Tailwind CSS v4 single-page case study.
+Concept campaign microsite by Group 4 (APRD 3105). React + Vite + Tailwind CSS v4 + Motion.
 
 ```bash
 npm install
-npm run dev     # local dev server
-npm run build   # production build to dist/
+npm run dev     # http://localhost:5173
+npm run build
 ```
 
 ## Structure
-- `src/data/content.js` — all copy and section data (edit this first)
-- `src/sections/` — one component per case-study section
-- `src/components/` — shared layout (Nav, Section, Footer)
-- Theme tokens live in `src/index.css` under `@theme`
+- `src/data/content.js` — all copy, stats, FAQ and sources (edit here)
+- `src/components/Glasses.jsx` — code-drawn SVG glasses (`state`: recording | idle | covered)
+- `src/sections/` — Hero (scroll zoom), TrustGap, SpotIt, Protections, Etiquette, Programs, FAQ
+- Theme tokens in `src/index.css`
