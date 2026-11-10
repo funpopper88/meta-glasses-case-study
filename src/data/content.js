@@ -67,6 +67,8 @@ export const faq = [
   { q: 'How can I tell if glasses are recording?', a: 'Look at the front of the frame. The capture light is on whenever the glasses take a photo, record video, or livestream.' },
   { q: 'What if someone covers the light?', a: "Tamper detection blocks photos and video until the light is uncovered." },
   { q: 'Where does footage go?', a: "It goes to the wearer's phone through the Meta AI app, where they control what's shared or deleted." },
+  { q: 'Are the glasses always listening?', a: 'The microphones listen for the "Hey Meta" wake word on the device. Voice is only processed after the wake word, and you can turn the wake word off or delete voice history in the Meta AI app.', verify: true },
+  { q: 'Does Meta use my photos and videos to train AI?', a: "According to Meta, photos and videos you capture stay in your camera roll and aren't used to train AI. Images you send to Meta AI, for example by asking about what you see, are handled under Meta's AI terms.", verify: true },
   { q: 'What if I think I’m being recorded without consent?', a: 'Ask the wearer to stop. If you feel unsafe, tell venue staff or security.' },
 ]
 
