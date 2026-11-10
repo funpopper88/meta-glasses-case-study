@@ -1,6 +1,6 @@
-# Meta Glasses · Trust & Safety
+# Meta Glasses · R.A.C.E. Campaign Pitch
 
-Concept campaign microsite by Group 4 (APRD 3105). React + Vite + Tailwind CSS v4 + Motion.
+PR agency pitch to Meta by Group 4 (APRD 3105). React + Vite + Tailwind CSS v4 + Motion.
 
 ```bash
 npm install
@@ -10,6 +10,6 @@ npm run build
 
 ## Structure
 - `src/data/content.js` — all copy, stats, FAQ and sources (edit here)
-- `src/components/Glasses.jsx` — code-drawn SVG glasses (`state`: recording | idle | covered)
-- `src/sections/` — Hero (scroll zoom), TrustGap, SpotIt, Protections, Etiquette, Programs, FAQ
+- `src/components/Glasses.jsx` — code-drawn SVG glasses in the Meta Adventurer style (`state`: recording | idle | covered)
+- `src/sections/` — Hero (one-time LED zoom), Situation, Objectives, Audiences, Strategy, Tactics, Evaluation, FAQ
 - Theme tokens in `src/index.css`

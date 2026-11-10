@@ -1,20 +1,95 @@
-// All site copy lives here. Facts marked [verify] are publicly documented
+// All site copy lives here. Items marked verify: true are publicly documented
 // Ray-Ban Meta features added beyond the paper — confirm before presenting.
+// Citations use AP style everywhere.
 
 export const nav = [
-  { id: 'why', label: 'Why' },
-  { id: 'spot', label: 'Spot It' },
-  { id: 'protections', label: 'Protections' },
-  { id: 'etiquette', label: 'Etiquette' },
-  { id: 'programs', label: 'Programs' },
+  { id: 'situation', label: 'Situation' },
+  { id: 'objectives', label: 'Objectives' },
+  { id: 'audiences', label: 'Audiences' },
+  { id: 'strategy', label: 'Strategy' },
+  { id: 'tactics', label: 'Tactics' },
+  { id: 'evaluation', label: 'Evaluation' },
   { id: 'faq', label: 'FAQ' },
 ]
 
-export const stats = [
-  { value: 73, suffix: '%', label: 'of global smart glasses sales are Meta', source: 'Source: TradingView, Feb. 16, 2026' },
-  { value: 3, suffix: '%', label: 'of smart glasses users strongly trust their device', source: 'Source: Security.org, Aug. 13, 2026' },
-  { value: 78, suffix: '%', label: 'of women worry about being secretly recorded', source: 'Source: Security.org, Aug. 13, 2026' },
+export const situation = {
+  current: [
+    'Meta leads the category with 73% of global smart glasses sales in the first half of 2025.',
+    'The public calls them "pervert glasses," and creators lose followers for wearing them.',
+    'Venues across the UK, including pub chain Wetherspoons, are banning them.',
+    'Lawsuits allege that reviewers saw everything from living rooms to bank cards in recordings.',
+  ],
+  ideal: [
+    'Anyone who sees smart glasses trusts Meta to protect their information and their rights.',
+    'Bystanders know every recording is visible and consented.',
+    'The "pervert glasses" label fades and venue bans lift.',
+    'Smart glasses become as everyday as the smartphone.',
+  ],
+  insight:
+    "People aren't rejecting the product for its design or quality. They don't trust Meta, or the person wearing the glasses, with their privacy.",
+  whyPR:
+    'This is a reactive situation, and the core problem is trust. Trust can’t be bought with advertising. An ad asking for it only deepens doubt. The public needs to be shown.',
+}
+
+export const headlines = [
+  { outlet: 'The Guardian', text: 'Creators lose followers as the "pervert glasses" label sticks', source: 'Aug. 9, 2026' },
+  { outlet: 'PetaPixel', text: 'UK venues ban Meta smart glasses en masse', source: 'Aug. 10, 2026' },
+  { outlet: 'CNN', text: '"Turn the cameras off": London pushes back on smart glasses', source: 'Sept. 22, 2026' },
+  { outlet: 'Legal Newsline', text: 'Lawsuit blitz hits Meta over AI glasses "privacy invasion"', source: 'March 24, 2026' },
 ]
+
+export const goal =
+  'Make Meta smart glasses trusted by both the people who wear them and the people around them, by establishing Meta as the leader in user privacy, data protection and responsible wearable technology.'
+
+export const angle = 'Your privacy and protection come first.'
+
+export const objectives = [
+  {
+    label: 'Objective 1 · Trust',
+    from: 3,
+    to: 20,
+    text: 'Increase the share of Meta smart glasses users ages 18 to 40 who strongly trust Meta to protect their data.',
+    by: 'October 2028',
+    note: 'Baseline: 3% of smart glasses users strongly trust their device, according to Security.org, Aug. 13, 2026.',
+  },
+  {
+    label: 'Objective 2 · Women buyers',
+    from: 35,
+    to: 40,
+    text: 'Increase the share of smart glasses purchased by women ages 18 to 30 to 40%.',
+    by: 'October 2028',
+    note: 'Reference point: 35% of smart glasses considerers are women, according to YouGov, June 30, 2025. No published figure exists for Meta buyers.',
+  },
+]
+
+export const audiences = [
+  {
+    tag: 'Live It',
+    name: 'Young, adventurous men',
+    age: '20–38',
+    who: 'Metro dwellers who value experiences: the outdoors, concerts and travel.',
+    message: "Live it, don't film it.",
+  },
+  {
+    tag: 'At Work',
+    name: 'Young professional women',
+    age: '18–30',
+    who: 'Want an innovative way to capture busy lives without sacrificing privacy. If they feel safe wearing the glasses, the strategy is working.',
+    message: 'Safety, privacy and real information.',
+  },
+  {
+    tag: 'Night Out',
+    name: 'Partygoing women',
+    age: '21–31',
+    who: 'The group most fearful of being recorded without consent. 78% of adult women are concerned.',
+    message: "You'll always know when you're being recorded, and you stay in control.",
+  },
+]
+
+export const strategy = {
+  title: "Prove it. Don't promise it.",
+  body: "Meta's lack of disclosure, combined with the public's limited understanding of data and privacy, creates a credibility gap. Every tactic demonstrates privacy in clear, everyday terms, paired with helpful use cases so the glasses feel useful, not dystopian.",
+}
 
 export const ledStates = {
   idle: { tag: 'LED OFF', tone: 'text-white/60', text: 'No light means the camera is not capturing photos or video.' },
@@ -36,31 +111,70 @@ export const code = [
   'If asked to stop, stop',
 ]
 
-export const programs = [
+export const tactics = [
   {
     id: 'live',
     label: 'Live It',
-    audience: 'For adventurers',
+    audience: 'Adventurous men, 20–38',
     headline: "Live it, don't film it.",
-    body: 'Hands-free on the trail, at the show, or abroad, and everyone around you knows when you are capturing.',
-    program: 'Live It Creator Kit: two pairs per creator, so every shot shows a partner who agreed to be filmed.',
+    program: 'The "Live It" PR Package',
+    items: [
+      'Custom kits shipped to a researched group of outdoor and fitness creators, each with two pairs of glasses so creators film only a partner who knowingly agreed.',
+      'A Guide to Privacy & Safety covering the capture light, how footage and data are stored and controlled, and filming etiquette, plus talking points like "The light on my glasses lets everyone around me know when I\'m filming."',
+      'Lead partner: Austin creator Chase Ridgeway (800K+ followers on Instagram and TikTok) and his brother take on a trail run, filming each other hands-free.',
+    ],
+    kpis: ['Engagement rate', 'Shares and saves', 'Comment sentiment'],
   },
   {
     id: 'night',
     label: 'Night Out',
-    audience: 'For your night out',
+    audience: 'Partygoing women, 21–31',
     headline: 'You’ll always know. You stay in control.',
-    body: "We won't ask you to trust strangers. We'll show you exactly how to tell when a pair is recording.",
-    program: 'Night Out Safety Kit: made with drink-testing nail polish, safety alarm and pepper spray brands.',
+    program: 'The "Night Out" Safety Partnership',
+    items: [
+      'A limited-edition safety kit co-created with brands women already trust: drink-testing nail polish, personal safety alarms and pepper spray.',
+      'Each partner receives consented footage, shot on Meta glasses, of its products working in real night-out settings.',
+      'Simple, shareable "Know the Signs" messaging on how to tell when glasses are recording.',
+    ],
+    kpis: ['Kit sell-through', '"Know the Signs" shares', 'Partner reach'],
   },
   {
     id: 'work',
     label: 'At Work',
-    audience: 'For professionals',
+    audience: 'Professional women, 18–30',
     headline: 'Real answers, not a sales pitch.',
-    body: "Hear how the glasses protect you and the people around you, straight from Meta's safety and privacy team.",
-    program: 'Straight Talk on Privacy: a Forbes / Fast Company feature plus a LinkedIn Live Q&A.',
+    program: 'Earned Media Feature + LinkedIn Live',
+    items: [
+      "A story pitched to Fast Company or Forbes pairing a member (ideally female) of Meta's safety and privacy team with a female founder of a tech or AI startup.",
+      'A plain-language walkthrough of the recording indicator and how captured data is stored and controlled.',
+      'Extended into a LinkedIn Live panel where viewers ask questions in real time.',
+    ],
+    kpis: ['Earned placements', 'Live attendance', 'Audience questions'],
   },
+]
+
+export const keyStats = [
+  { value: 73, suffix: '%', label: "Meta's share of global smart glasses sales, first half of 2025", source: 'TradingView, Feb. 16, 2026' },
+  { value: 3, suffix: '%', label: 'of smart glasses users strongly trust their device', source: 'Security.org, Aug. 13, 2026' },
+  { value: 78, suffix: '%', label: 'of adult women are concerned about secret recording in public', source: 'Security.org, Aug. 13, 2026' },
+  { value: 35, suffix: '%', label: 'of smart glasses considerers are women', source: 'YouGov, June 30, 2025' },
+]
+
+// Proposed measurement plan: expands the paper's "engagement, earned media
+// coverage and shifts in audience sentiment"
+export const measures = [
+  { title: 'Trust survey', target: '3% → 20%', body: 'Benchmark survey of Meta glasses users ages 18 to 40 at launch, repeated at the midpoint and the finish.' },
+  { title: 'Purchase share', target: '→ 40%', body: "Share of purchases by women ages 18 to 30, tracked through Meta's sales data." },
+  { title: 'Sentiment', target: 'Negative mentions ↓', body: 'Social listening on "pervert glasses" mentions and the tone of comments on smart glasses content.' },
+  { title: 'Earned media', target: 'Placements ↑', body: 'Coverage in business, tech and lifestyle outlets that explains the privacy features.' },
+]
+
+export const timeline = [
+  { when: 'Q1 2027', what: 'Baseline trust survey · Live It launch' },
+  { when: 'Q2 2027', what: 'Night Out safety kit drops' },
+  { when: 'Q3 2027', what: 'Forbes / Fast Company feature · LinkedIn Live' },
+  { when: 'Oct. 2027', what: 'Midpoint survey and sentiment check' },
+  { when: 'Oct. 2028', what: 'Final evaluation against both objectives' },
 ]
 
 export const faq = [

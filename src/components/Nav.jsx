@@ -25,14 +25,14 @@ export default function Nav() {
           <span className="relative flex h-2.5 w-2.5">
             <span className="absolute inset-0 animate-rec rounded-full bg-rec" />
           </span>
-          Meta Glasses <span className="font-normal text-white/40">/ Trust &amp; Safety</span>
+          Group 4 <span className="font-normal text-white/40">/ Pitch to Meta</span>
         </a>
-        <ul className="hidden gap-1 md:flex">
+        <ul className="hidden gap-0.5 lg:flex">
           {nav.map((s) => (
             <li key={s.id}>
               <a
                 href={`#${s.id}`}
-                className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
+                className={`rounded-full px-3 py-1.5 text-sm transition-colors ${
                   active === s.id ? 'bg-blue-500/15 text-blue-200' : 'text-white/55 hover:text-white'
                 }`}
               >
@@ -41,12 +41,12 @@ export default function Nav() {
             </li>
           ))}
         </ul>
-        <button className="md:hidden" onClick={() => setOpen((o) => !o)} aria-label="Toggle menu" aria-expanded={open}>
+        <button className="lg:hidden" onClick={() => setOpen((o) => !o)} aria-label="Toggle menu" aria-expanded={open}>
           {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
         </button>
       </nav>
       {open && (
-        <ul className="border-t border-white/5 px-4 pb-4 md:hidden">
+        <ul className="border-t border-white/5 px-4 pb-4 lg:hidden">
           {nav.map((s) => (
             <li key={s.id}>
               <a href={`#${s.id}`} onClick={() => setOpen(false)} className="block py-2.5 text-white/70">

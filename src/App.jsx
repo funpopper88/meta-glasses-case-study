@@ -1,11 +1,12 @@
 import Nav from './components/Nav'
 import Footer from './components/Footer'
 import Hero from './sections/Hero'
-import TrustGap from './sections/TrustGap'
-import SpotIt from './sections/SpotIt'
-import Protections from './sections/Protections'
-import Etiquette from './sections/Etiquette'
-import Programs from './sections/Programs'
+import Situation from './sections/Situation'
+import Objectives from './sections/Objectives'
+import Audiences from './sections/Audiences'
+import Strategy from './sections/Strategy'
+import Tactics from './sections/Tactics'
+import Evaluation from './sections/Evaluation'
 import FAQ from './sections/FAQ'
 
 function Backdrop() {
@@ -25,11 +26,12 @@ export default function App() {
       <Nav />
       <main>
         <Hero />
-        <TrustGap />
-        <SpotIt />
-        <Protections />
-        <Etiquette />
-        <Programs />
+        <Situation />
+        <Objectives />
+        <Audiences />
+        <Strategy />
+        <Tactics />
+        <Evaluation />
         <FAQ />
       </main>
       <Footer />
