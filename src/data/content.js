@@ -9,6 +9,7 @@ export const nav = [
   { id: 'strategy', label: 'Strategy' },
   { id: 'tactics', label: 'Tactics' },
   { id: 'evaluation', label: 'Evaluation' },
+  { id: 'engage', label: 'Work With Us' },
   { id: 'faq', label: 'FAQ' },
 ]
 
@@ -117,39 +118,27 @@ export const tactics = [
     label: 'Live It',
     audience: 'Adventurous men, 20–38',
     headline: "Live it, don't film it.",
-    program: 'The "Live It" PR Package',
-    items: [
-      'Custom kits shipped to a researched group of outdoor and fitness creators, each with two pairs of glasses so creators film only a partner who knowingly agreed.',
-      'A Guide to Privacy & Safety covering the capture light, how footage and data are stored and controlled, and filming etiquette, plus talking points like "The light on my glasses lets everyone around me know when I\'m filming."',
-      'Lead partner: Austin creator Chase Ridgeway (800K+ followers on Instagram and TikTok) and his brother take on a trail run, filming each other hands-free.',
-    ],
-    kpis: ['Engagement rate', 'Shares and saves', 'Comment sentiment'],
+    teaser: 'A creator program that puts the capture light front and center, designed so every shot is consented.',
+    locked: ['Vetted creator roster and lead partner', 'Custom PR package concept', 'Privacy and safety guide with talking points'],
+    kpis: ['Engagement', 'Shares and saves', 'Sentiment'],
   },
   {
     id: 'night',
     label: 'Night Out',
     audience: 'Partygoing women, 21–31',
     headline: 'You’ll always know. You stay in control.',
-    program: 'The "Night Out" Safety Partnership',
-    items: [
-      'A limited-edition safety kit co-created with brands women already trust: drink-testing nail polish, personal safety alarms and pepper spray.',
-      'Each partner receives consented footage, shot on Meta glasses, of its products working in real night-out settings.',
-      'Simple, shareable "Know the Signs" messaging on how to tell when glasses are recording.',
-    ],
-    kpis: ['Kit sell-through', '"Know the Signs" shares', 'Partner reach'],
+    teaser: 'A partnership with brands women already trust for safety, positioning Meta as part of the solution, not the threat.',
+    locked: ['Partner brand shortlist', 'Co-branded product concept', 'Shareable consumer safety messaging'],
+    kpis: ['Reach', 'Shares', 'Sentiment'],
   },
   {
     id: 'work',
     label: 'At Work',
     audience: 'Professional women, 18–30',
     headline: 'Real answers, not a sales pitch.',
-    program: 'Earned Media Feature + LinkedIn Live',
-    items: [
-      "A story pitched to Fast Company or Forbes pairing a member (ideally female) of Meta's safety and privacy team with a female founder of a tech or AI startup.",
-      'A plain-language walkthrough of the recording indicator and how captured data is stored and controlled.',
-      'Extended into a LinkedIn Live panel where viewers ask questions in real time.',
-    ],
-    kpis: ['Earned placements', 'Live attendance', 'Audience questions'],
+    teaser: 'Credible expert voices explaining privacy in plain terms, on the platforms professionals already use.',
+    locked: ['Spokesperson pairing', 'Target outlets and pitch angles', 'Live event format'],
+    kpis: ['Earned media', 'Attendance', 'Engagement'],
   },
 ]
 
@@ -160,22 +149,31 @@ export const keyStats = [
   { value: 35, suffix: '%', label: 'of smart glasses considerers are women', source: 'YouGov, June 30, 2025' },
 ]
 
-// Proposed measurement plan: expands the paper's "engagement, earned media
-// coverage and shifts in audience sentiment"
+// Outcomes only; methods are part of the paid engagement
 export const measures = [
-  { title: 'Trust survey', target: '3% → 20%', body: 'Benchmark survey of Meta glasses users ages 18 to 40 at launch, repeated at the midpoint and the finish.' },
-  { title: 'Purchase share', target: '→ 40%', body: "Share of purchases by women ages 18 to 30, tracked through Meta's sales data." },
-  { title: 'Sentiment', target: 'Negative mentions ↓', body: 'Social listening on "pervert glasses" mentions and the tone of comments on smart glasses content.' },
-  { title: 'Earned media', target: 'Placements ↑', body: 'Coverage in business, tech and lifestyle outlets that explains the privacy features.' },
+  { title: 'Trust', target: '3% → 20%', body: 'A repeatable trust benchmark of Meta glasses users, ages 18 to 40.' },
+  { title: 'Purchase share', target: '→ 40%', body: 'Share of purchases by women ages 18 to 30.' },
+  { title: 'Sentiment', target: 'Negative mentions ↓', body: 'How people talk about smart glasses online.' },
+  { title: 'Earned media', target: 'Placements ↑', body: 'Coverage that explains the privacy features.' },
 ]
 
 export const timeline = [
-  { when: 'Q1 2027', what: 'Baseline trust survey · Live It launch' },
-  { when: 'Q2 2027', what: 'Night Out safety kit drops' },
-  { when: 'Q3 2027', what: 'Forbes / Fast Company feature · LinkedIn Live' },
-  { when: 'Oct. 2027', what: 'Midpoint survey and sentiment check' },
+  { when: 'Phase 1', what: 'Benchmark and launch' },
+  { when: 'Phase 2', what: 'Scale across all three audiences' },
   { when: 'Oct. 2028', what: 'Final evaluation against both objectives' },
 ]
+
+export const engagement = {
+  title: 'The full playbook comes with the partnership.',
+  body: 'This pitch shows what we will achieve. Once we are hired, we deliver how.',
+  deliverables: [
+    'Complete tactic playbooks with named creators, partners and spokespeople',
+    'Media list and tailored pitch angles',
+    '24-month campaign calendar',
+    'Measurement framework and trust benchmark design',
+    'Rapid-response messaging for privacy flashpoints',
+  ],
+}
 
 export const faq = [
   { q: 'How can I tell if glasses are recording?', a: 'Look at the front of the frame. The capture light is on whenever the glasses take a photo, record video, or livestream.' },

@@ -7,6 +7,7 @@ import Audiences from './sections/Audiences'
 import Strategy from './sections/Strategy'
 import Tactics from './sections/Tactics'
 import Evaluation from './sections/Evaluation'
+import Engage from './sections/Engage'
 import FAQ from './sections/FAQ'
 
 function Backdrop() {
@@ -32,6 +33,7 @@ export default function App() {
         <Strategy />
         <Tactics />
         <Evaluation />
+        <Engage />
         <FAQ />
       </main>
       <Footer />

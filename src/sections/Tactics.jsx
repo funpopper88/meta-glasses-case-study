@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
-import { Check } from 'lucide-react'
+import { Lock } from 'lucide-react'
 import Section from '../components/Section'
 import { tactics } from '../data/content'
 
@@ -9,7 +9,7 @@ export default function Tactics() {
   const t = tactics.find((x) => x.id === tab)
 
   return (
-    <Section id="tactics" index="05" eyebrow="Communication · Tactics" title="Real experiences. Credible voices." intro="One tactic per audience, each answering that audience's biggest concern.">
+    <Section id="tactics" index="05" eyebrow="Communication · Tactics" title="Real experiences. Credible voices." intro="One tactic per audience, each answering that audience's biggest concern. The full playbook is part of the engagement.">
       <div role="tablist" aria-label="Tactics" className="mb-6 inline-flex rounded-full border border-white/10 bg-white/[0.03] p-1">
         {tactics.map((x) => (
           <button
@@ -38,7 +38,7 @@ export default function Tactics() {
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-blue-300/70">{t.audience}</p>
             <h3 className="mt-3 text-3xl font-bold tracking-tight">{t.headline}</h3>
-            <p className="mt-4 font-semibold text-white/80">{t.program}</p>
+            <p className="mt-4 text-lg leading-relaxed text-white/70">{t.teaser}</p>
             <p className="mt-8 font-mono text-xs uppercase tracking-widest text-white/40">Measured by</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {t.kpis.map((k) => (
@@ -46,14 +46,19 @@ export default function Tactics() {
               ))}
             </div>
           </div>
-          <ul className="space-y-5">
-            {t.items.map((it) => (
-              <li key={it} className="flex gap-3">
-                <Check className="mt-0.5 h-5 w-5 shrink-0 text-blue-300" />
-                <span className="leading-relaxed text-white/70">{it}</span>
-              </li>
-            ))}
-          </ul>
+          <div className="rounded-xl border border-dashed border-white/15 bg-black/30 p-6">
+            <p className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-white/50">
+              <Lock className="h-3.5 w-3.5" /> Included in the full playbook
+            </p>
+            <ul className="mt-5 space-y-4">
+              {t.locked.map((it) => (
+                <li key={it} className="flex items-center gap-3 text-white/60">
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-300/60" />
+                  {it}
+                </li>
+              ))}
+            </ul>
+          </div>
         </motion.div>
       </AnimatePresence>
     </Section>

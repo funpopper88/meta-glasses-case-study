@@ -54,8 +54,8 @@ export default function Evaluation() {
       </div>
 
       <Reveal className="mt-12">
-        <p className="mb-6 font-mono text-xs uppercase tracking-widest text-white/40">Proposed timeline</p>
-        <ol className="relative grid gap-6 border-l border-white/10 pl-6 md:grid-cols-5 md:border-l-0 md:border-t md:pl-0 md:pt-6">
+        <p className="mb-6 font-mono text-xs uppercase tracking-widest text-white/40">Campaign phases</p>
+        <ol className="relative grid gap-6 border-l border-white/10 pl-6 md:grid-cols-3 md:border-l-0 md:border-t md:pl-0 md:pt-6">
           {timeline.map((t) => (
             <li key={t.when} className="relative">
               <span className="absolute -left-[29px] top-1.5 h-2.5 w-2.5 rounded-full bg-blue-400 md:-top-[31px] md:left-0" />

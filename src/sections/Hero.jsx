@@ -1,13 +1,14 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import { motion, useMotionValueEvent, useReducedMotion, useScroll, useTransform } from 'motion/react'
 import { ChevronDown } from 'lucide-react'
-import Glasses from '../components/Glasses'
+import Glasses, { VARIANTS } from '../components/Glasses'
 import { team } from '../data/content'
 
 const corner = 'absolute h-8 w-8 border-blue-300/40'
+const VARIANT = 'kylie' // 'kylie' | 'adventurer'
 // LED position within the 900x340 glasses viewBox
-const LED_X = 798 / 900
-const LED_Y = 70 / 340
+const LED_X = VARIANTS[VARIANT].led[0] / 900
+const LED_Y = VARIANTS[VARIANT].led[1] / 340
 
 function Hud({ style }) {
   return (
@@ -74,7 +75,7 @@ export default function Hero() {
         {glow}
         <Hud />
         <div className="relative w-full max-w-4xl">
-          <Glasses state="recording" className={glassesClass} />
+          <Glasses state="recording" variant={VARIANT} className={glassesClass} />
         </div>
         <Title />
       </section>
@@ -90,7 +91,7 @@ export default function Hero() {
           style={{ scale, x, y, opacity: glassesOpacity, transformOrigin: `${LED_X * 100}% ${LED_Y * 100}%` }}
           className="relative w-full max-w-4xl will-change-transform"
         >
-          <Glasses state="recording" className={glassesClass} />
+          <Glasses state="recording" variant={VARIANT} className={glassesClass} />
         </motion.div>
         <Title style={{ opacity: introOpacity }} />
         <motion.p
