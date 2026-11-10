@@ -11,9 +11,9 @@ export const nav = [
 ]
 
 export const stats = [
-  { value: 73, suffix: '%', label: 'of global smart glasses sales are Meta', source: 'Clark, 2026' },
-  { value: 3, suffix: '%', label: 'of smart glasses users strongly trust their device', source: 'Cruz & Petrino, 2026' },
-  { value: 78, suffix: '%', label: 'of women worry about being secretly recorded', source: 'Cruz & Petrino, 2026' },
+  { value: 73, suffix: '%', label: 'of global smart glasses sales are Meta', source: 'Source: TradingView, Feb. 16, 2026' },
+  { value: 3, suffix: '%', label: 'of smart glasses users strongly trust their device', source: 'Source: Security.org, Aug. 13, 2026' },
+  { value: 78, suffix: '%', label: 'of women worry about being secretly recorded', source: 'Source: Security.org, Aug. 13, 2026' },
 ]
 
 export const ledStates = {
