@@ -31,8 +31,8 @@ export default function Glasses({ state = 'recording', className = '' }) {
           <stop offset="1" stopColor="#60a5fa" stopOpacity="0" />
         </linearGradient>
         <radialGradient id={ref('lens')} cx=".45" cy=".35" r=".85">
-          <stop offset="0" stopColor="#1d4ed8" stopOpacity=".55" />
-          <stop offset=".55" stopColor="#0b1633" stopOpacity=".9" />
+          <stop offset="0" stopColor="#1e3a8a" stopOpacity=".55" />
+          <stop offset=".55" stopColor="#0a1430" stopOpacity=".9" />
           <stop offset="1" stopColor="#02040a" stopOpacity=".97" />
         </radialGradient>
         <linearGradient id={ref('glare')} x1="0" y1="0" x2="1" y2="1">
