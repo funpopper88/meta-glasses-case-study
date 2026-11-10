@@ -2,135 +2,262 @@ import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-// Procedural smart glasses in the style of the Meta Starfire Kylie Edition:
-// slim oval classic-black frame, black lenses, small gem on each lens.
-// Camera module on the viewer's left, blinking capture LED on the viewer's right.
-// Units: 1 = 50 mm (48 mm lens, 21 mm bridge).
+// Procedural Meta Starfire Kylie Edition-style smart glasses, traced from the
+// product's front view: cat-eye front with upswept outer wings, a dip in the top
+// edge at the bridge, a narrow keyhole nose cut-out, large almond lenses with a
+// thin silver ring, round camera/LED dots on the wings, thick glossy acetate,
+// thick temples with down-turned ear hooks. LED on the viewer's right.
 
-const RX = 0.48 // lens half-width
-const RY = 0.33 // lens half-height
-const RIM = 0.055
-const EYE_X = RX + 0.21
-const END_Y = 0.1
-const OUTER_X = EYE_X + (RX + RIM) * Math.sqrt(1 - (END_Y / (RY + RIM)) ** 2)
+const WRAP = 0.1 // front wrap: z -= WRAP * x^2
+const DEPTH = 0.14
+const BEVEL_T = 0.045
+const FRONT_Z = DEPTH / 2 + BEVEL_T
+const VSCALE = 0.88 // flatten to match the product's proportions
+const END = { x: 1.37, y: 0.13 * VSCALE }
+const LENS_C = [0.71, -0.05]
 
-function oval(rx, ry) {
+export const zAt = (x, z = FRONT_Z) => z - WRAP * x * x
+export const tiltAt = (x) => Math.atan(2 * WRAP * x)
+
+// Right half of the front outline, from the top-center dip clockwise to the
+// top of the nose cut-out. Each entry: [control1, control2, end].
+const FRONT_START = [0, 0.25]
+const FRONT_R = [
+  [[0.15, 0.25], [0.3, 0.33], [0.6, 0.36]],
+  [[0.9, 0.39], [1.2, 0.43], [1.38, 0.42]],
+  [[1.47, 0.41], [1.51, 0.34], [1.5, 0.24]],
+  [[1.48, 0.05], [1.39, -0.2], [1.2, -0.34]],
+  [[1.02, -0.47], [0.82, -0.48], [0.66, -0.48]],
+  [[0.45, -0.48], [0.3, -0.44], [0.22, -0.36]],
+  [[0.17, -0.3], [0.15, -0.12], [0.11, -0.05]],
+  [[0.08, 0.0], [0.04, 0.03], [0, 0.03]],
+]
+
+// Right lens: flatter top, rounder bottom, cat-eye outer corner
+const LENS_START = [0.21, 0.0]
+const LENS_R = [
+  [[0.22, 0.2], [0.36, 0.3], [0.62, 0.31]],
+  [[0.9, 0.32], [1.12, 0.33], [1.2, 0.25]],
+  [[1.27, 0.17], [1.26, 0.02], [1.2, -0.1]],
+  [[1.1, -0.32], [0.9, -0.41], [0.68, -0.41]],
+  [[0.45, -0.41], [0.27, -0.33], [0.22, -0.18]],
+  [[0.2, -0.12], [0.2, -0.05], [0.21, 0.0]],
+]
+
+function frontShape() {
   const s = new THREE.Shape()
-  s.absellipse(0, 0, rx, ry, 0, Math.PI * 2, false, 0)
+  s.moveTo(...FRONT_START)
+  FRONT_R.forEach(([c1, c2, e]) => s.bezierCurveTo(c1[0], c1[1], c2[0], c2[1], e[0], e[1]))
+  // left half: walk the right half backwards, mirrored
+  for (let i = FRONT_R.length - 1; i >= 0; i--) {
+    const [c1, c2] = FRONT_R[i]
+    const start = i === 0 ? FRONT_START : FRONT_R[i - 1][2]
+    s.bezierCurveTo(-c2[0], c2[1], -c1[0], c1[1], -start[0], start[1])
+  }
   return s
+}
+
+// Lens outline for a side (+1 right, -1 left), scaled about the lens center
+function lensPath(side, scale = 1, PathType = THREE.Path) {
+  const t = ([x, y]) => [side * (LENS_C[0] + (x - LENS_C[0]) * scale), LENS_C[1] + (y - LENS_C[1]) * scale]
+  const p = new PathType()
+  p.moveTo(...t(LENS_START))
+  LENS_R.forEach(([c1, c2, e]) => p.bezierCurveTo(...t(c1), ...t(c2), ...t(e)))
+  return p
+}
+
+// Bend geometry around the vertical axis and rotate normals to match,
+// so the wrap stays smooth instead of faceted.
+function wrap(geo) {
+  const pos = geo.attributes.position
+  const nor = geo.attributes.normal
+  const n = new THREE.Vector3()
+  for (let i = 0; i < pos.count; i++) {
+    const x = pos.getX(i)
+    pos.setZ(i, pos.getZ(i) - WRAP * x * x)
+    const a = tiltAt(x)
+    n.fromBufferAttribute(nor, i)
+    const nx = n.x * Math.cos(a) + n.z * Math.sin(a)
+    const nz = -n.x * Math.sin(a) + n.z * Math.cos(a)
+    nor.setXYZ(i, nx, n.y, nz)
+  }
+  pos.needsUpdate = true
+  nor.needsUpdate = true
+  return geo
+}
+
+function templeShape() {
+  const t = new THREE.Shape()
+  t.moveTo(0, 0.13)
+  t.bezierCurveTo(0.6, 0.12, 1.2, 0.1, 1.55, 0.08)
+  t.bezierCurveTo(1.68, 0.07, 1.76, 0.0, 1.79, -0.13)
+  t.lineTo(1.72, -0.17)
+  t.bezierCurveTo(1.68, -0.07, 1.62, -0.03, 1.52, -0.03)
+  t.bezierCurveTo(1.2, -0.03, 0.6, -0.06, 0, -0.12)
+  t.closePath()
+  return t
 }
 
 function useGeometries() {
   return useMemo(() => {
-    const ring = oval(RX + RIM, RY + RIM)
-    ring.holes.push(oval(RX, RY))
-    const rim = new THREE.ExtrudeGeometry(ring, {
-      depth: 0.05,
+    const shape = frontShape()
+    // hole is a little larger than the lens; the bevel pulls it back in
+    shape.holes.push(lensPath(1, 1.07), lensPath(-1, 1.07))
+    const front = new THREE.ExtrudeGeometry(shape, {
+      depth: DEPTH,
       bevelEnabled: true,
-      bevelThickness: 0.022,
-      bevelSize: 0.018,
+      bevelThickness: BEVEL_T,
+      bevelSize: 0.035,
+      bevelSegments: 10,
+      curveSegments: 80,
+    })
+    front.translate(0, 0, -DEPTH / 2)
+    front.scale(1, VSCALE, 1)
+    wrap(front)
+
+    const lenses = [1, -1].map((side) => {
+      const g = new THREE.ExtrudeGeometry(lensPath(side, 1.07, THREE.Shape), { depth: 0.022, bevelEnabled: false, curveSegments: 80 })
+      g.translate(0, 0, -0.011)
+      g.scale(1, VSCALE, 1)
+      return wrap(g)
+    })
+
+    // thin silver ring just inside each lens edge
+    const rings = [1, -1].map((side) => {
+      const r = lensPath(side, 1.01, THREE.Shape)
+      r.holes.push(lensPath(side, 0.975))
+      const g = new THREE.ShapeGeometry(r, 80)
+      g.translate(0, 0, 0.014)
+      g.scale(1, VSCALE, 1)
+      return wrap(g)
+    })
+
+    const temple = new THREE.ExtrudeGeometry(templeShape(), {
+      depth: 0.06,
+      bevelEnabled: true,
+      bevelThickness: 0.025,
+      bevelSize: 0.022,
       bevelSegments: 6,
-      curveSegments: 72,
+      curveSegments: 40,
     })
-    rim.translate(0, 0, -0.025)
-
-    const lens = new THREE.ExtrudeGeometry(oval(RX + 0.01, RY + 0.01), { depth: 0.01, bevelEnabled: false, curveSegments: 72 })
-
-    const b = new THREE.Shape()
-    b.moveTo(-0.24, 0.025)
-    b.quadraticCurveTo(0, 0.12, 0.24, 0.025)
-    b.lineTo(0.24, -0.025)
-    b.quadraticCurveTo(0, 0.07, -0.24, -0.025)
-    b.closePath()
-    const bridge = new THREE.ExtrudeGeometry(b, {
-      depth: 0.04,
-      bevelEnabled: true,
-      bevelThickness: 0.015,
-      bevelSize: 0.012,
-      bevelSegments: 5,
-      curveSegments: 24,
-    })
-    bridge.translate(0, 0.1, -0.02)
-    return { rim, lens, bridge }
+    temple.translate(0, 0, -0.03)
+    temple.rotateY(Math.PI / 2) // length runs back along -z, thickness along x
+    return { front, lenses, rings, temple }
   }, [])
 }
 
 const acetate = (
-  <meshPhysicalMaterial color="#0c0c0f" roughness={0.16} metalness={0.1} clearcoat={1} clearcoatRoughness={0.03} envMapIntensity={1.8} />
+  <meshPhysicalMaterial color="#09090b" roughness={0.12} metalness={0.05} clearcoat={1} clearcoatRoughness={0.02} envMapIntensity={2} />
 )
 
-export default function Glasses3D({ recording = true, ledRef, groupRef, ...props }) {
-  const { rim, lens, bridge } = useGeometries()
+// Small disc that sits flush on the wrapped front surface at x, y
+function OnFront({ x, y, lift = 0.004, children, groupRef }) {
+  return (
+    <group ref={groupRef} position={[x, y, zAt(x) + lift]} rotation={[0, tiltAt(x), 0]}>
+      {children}
+    </group>
+  )
+}
+
+export default function Glasses3D({ state = 'recording', ledRef, groupRef, ...props }) {
+  const recording = state === 'recording'
+  const { front, lenses, rings, temple } = useGeometries()
   const led = useRef()
   const ledLight = useRef()
+  const glow = useRef()
+
+  // Soft additive glow sprite: much cheaper than a full-screen bloom pass
+  const glowTex = useMemo(() => {
+    const c = document.createElement('canvas')
+    c.width = c.height = 128
+    const g = c.getContext('2d')
+    const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64)
+    gr.addColorStop(0, 'rgba(255,90,90,1)')
+    gr.addColorStop(0.2, 'rgba(255,40,40,0.65)')
+    gr.addColorStop(1, 'rgba(255,0,0,0)')
+    g.fillStyle = gr
+    g.fillRect(0, 0, 128, 128)
+    return new THREE.CanvasTexture(c)
+  }, [])
 
   useFrame(({ clock }) => {
     if (!led.current) return
     const on = recording ? (Math.sin(clock.elapsedTime * 4.5) + 1) / 2 : 0
-    led.current.material.emissiveIntensity = 0.2 + on * 9
+    led.current.material.emissiveIntensity = 0.6 + on * 3
     if (ledLight.current) ledLight.current.intensity = on * 1.4
+    if (glow.current) glow.current.material.opacity = 0.15 + on * 0.85
   })
+
+  const templeX = 1.4
+  const templeZ = zAt(templeX, -0.02)
 
   return (
     <group ref={groupRef} {...props}>
-      {[-1, 1].map((side) => (
-        <group key={side} position={[side * EYE_X, 0, 0]}>
-          <mesh geometry={rim}>{acetate}</mesh>
-          <mesh geometry={lens} position={[0, 0, -0.005]}>
-            <meshPhysicalMaterial
-              color="#060608"
-              roughness={0}
-              metalness={0.35}
-              clearcoat={1}
-              clearcoatRoughness={0}
-              transparent
-              opacity={0.93}
-              envMapIntensity={2.6}
-            />
-          </mesh>
-          {/* gem accent, lower outer corner of each lens */}
-          <mesh position={[side * 0.3, -0.2, 0.02]} rotation={[0, 0, Math.PI / 4]}>
-            <octahedronGeometry args={[0.022, 0]} />
-            <meshPhysicalMaterial color="#ffffff" metalness={0.9} roughness={0.05} clearcoat={1} envMapIntensity={4} />
-          </mesh>
-        </group>
-      ))}
-      <mesh geometry={bridge}>{acetate}</mesh>
+      <mesh geometry={front}>{acetate}</mesh>
 
-      {/* end pieces + slim temples */}
-      {[-1, 1].map((side) => (
-        <group key={`t${side}`} position={[side * (OUTER_X + 0.02), END_Y, -0.01]}>
-          <mesh>
-            <boxGeometry args={[0.09, 0.11, 0.1]} />
-            {acetate}
-          </mesh>
-          <mesh position={[side * 0.015, 0, -0.82]}>
-            <boxGeometry args={[0.04, 0.075, 1.6]} />
-            {acetate}
-          </mesh>
-        </group>
-      ))}
-
-      {/* camera module, viewer's left */}
-      <group position={[-(OUTER_X + 0.02), END_Y, 0.045]} rotation={[Math.PI / 2, 0, 0]}>
-        <mesh>
-          <cylinderGeometry args={[0.032, 0.032, 0.012, 40]} />
-          <meshStandardMaterial color="#3a3d44" metalness={1} roughness={0.25} />
+      {lenses.map((g, i) => (
+        <mesh key={i} geometry={g}>
+          <meshPhysicalMaterial attach="material-0" color="#16171a" roughness={0} metalness={0.4} clearcoat={1} transparent opacity={0.94} envMapIntensity={2.6} />
+          <meshStandardMaterial attach="material-1" color="#b8bcc4" metalness={1} roughness={0.2} />
         </mesh>
-        <mesh position={[0, 0.007, 0]}>
-          <cylinderGeometry args={[0.02, 0.02, 0.003, 40]} />
+      ))}
+
+      {rings.map((g, i) => (
+        <mesh key={`ring${i}`} geometry={g}>
+          <meshStandardMaterial color="#b9bcc2" metalness={0.6} roughness={0.35} envMapIntensity={0.8} side={THREE.DoubleSide} />
+        </mesh>
+      ))}
+
+      {/* small mark on the left lens, upper outer area */}
+      {[-1].map((side) => (
+        <OnFront key={`g${side}`} x={side * 1.0} y={0.18 * VSCALE} lift={-FRONT_Z + 0.02}>
+          <mesh rotation={[Math.PI / 2, 0, 0]}>
+            <cylinderGeometry args={[0.016, 0.016, 0.004, 3]} />
+            <meshStandardMaterial color="#d9dce2" metalness={1} roughness={0.1} />
+          </mesh>
+        </OnFront>
+      ))}
+
+      {/* thick temples with down-turned ear hooks */}
+      {[-1, 1].map((side) => (
+        <mesh key={`t${side}`} geometry={temple} position={[side * templeX, 0.11, templeZ]} rotation={[0, side * -0.06, 0]}>
+          {acetate}
+        </mesh>
+      ))}
+
+      {/* camera, viewer's left */}
+      <OnFront x={-END.x} y={END.y}>
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.04, 0.04, 0.01, 40]} />
+          <meshStandardMaterial color="#2c2f36" metalness={1} roughness={0.3} />
+        </mesh>
+        <mesh position={[0, 0, 0.006]} rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.022, 0.022, 0.003, 40]} />
           <meshPhysicalMaterial color="#0a1a3a" metalness={0.6} roughness={0} clearcoat={1} />
         </mesh>
-      </group>
+      </OnFront>
 
       {/* capture LED, viewer's right */}
-      <group position={[OUTER_X + 0.02, END_Y, 0.05]} ref={ledRef}>
-        <mesh ref={led}>
-          <sphereGeometry args={[0.016, 24, 24]} />
+      <OnFront x={END.x} y={END.y} groupRef={ledRef}>
+        <mesh rotation={[Math.PI / 2, 0, 0]}>
+          <cylinderGeometry args={[0.04, 0.04, 0.008, 40]} />
+          <meshStandardMaterial color="#2c2f36" metalness={1} roughness={0.3} />
+        </mesh>
+        <mesh ref={led} scale={[1, 1, 0.5]} position={[0, 0, 0.006]}>
+          <sphereGeometry args={[0.018, 24, 24]} />
           <meshStandardMaterial color="#ff2a2a" emissive="#ff1a1a" emissiveIntensity={6} toneMapped={false} />
         </mesh>
-        <pointLight ref={ledLight} color="#ff2a2a" distance={0.5} decay={2} />
-      </group>
+        <sprite ref={glow} scale={[0.2, 0.2, 1]} position={[0, 0, 0.01]}>
+          <spriteMaterial map={glowTex} transparent depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
+        </sprite>
+        {state === 'covered' && (
+          <mesh position={[0, 0, 0.02]} rotation={[0, 0, -0.25]}>
+            <boxGeometry args={[0.13, 0.09, 0.025]} />
+            <meshStandardMaterial color="#8b8f99" roughness={0.6} />
+          </mesh>
+        )}
+        <pointLight ref={ledLight} color="#ff2a2a" distance={0.5} decay={2} position={[0, 0, 0.05]} />
+      </OnFront>
     </group>
   )
 }

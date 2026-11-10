@@ -10,6 +10,6 @@ npm run build
 
 ## Structure
 - `src/data/content.js` — all copy, stats, FAQ and sources (edit here)
-- `src/components/Glasses.jsx` — code-drawn SVG glasses (`variant`: kylie | adventurer) (`state`: recording | idle | covered)
+- `src/three/` — procedural 3D Starfire Kylie-style glasses (Glasses3D) and scene/camera rig (Scene)
 - `src/sections/` — Hero (one-time LED zoom), Situation, Objectives, Audiences, Strategy, Tactics, Evaluation, Engage, FAQ
 - Theme tokens in `src/index.css`

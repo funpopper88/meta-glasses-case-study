@@ -1,8 +1,10 @@
-import { useState } from 'react'
+import { Suspense, lazy, useState } from 'react'
 import Section from '../components/Section'
 import Reveal from '../components/Reveal'
-import Glasses from '../components/Glasses'
 import { audiences, ledStates, strategy } from '../data/content'
+
+const GlassesCanvas = lazy(() => import('../three/Scene'))
+const DEMO_POSE = { rotY: -0.06, rotX: 0.03, y: 0, minZ: 3.4, fit: 3.3 }
 
 const modes = [
   ['recording', 'Recording'],
@@ -33,7 +35,11 @@ export default function Communication() {
       <Reveal className="card relative mt-4 overflow-hidden p-6 sm:p-10">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(13,34,87,0.7),transparent_70%)]" />
         <div className="relative grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
-          <Glasses state={mode} variant="kylie" className="w-full" />
+          <div className="aspect-[16/8] w-full">
+            <Suspense fallback={null}>
+              <GlassesCanvas state={mode} pose={DEMO_POSE} className="h-full w-full" />
+            </Suspense>
+          </div>
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-white/40">Core message</p>
             <p className="mt-2 text-lg text-white/80">Every channel teaches people how to tell when glasses are recording.</p>
