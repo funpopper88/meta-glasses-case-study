@@ -33,7 +33,7 @@ export default function Communication() {
       <Reveal className="card relative mt-4 overflow-hidden p-6 sm:p-10">
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(13,34,87,0.7),transparent_70%)]" />
         <div className="relative grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
-          <Glasses state={mode} className="w-full" />
+          <Glasses state={mode} variant="kylie" className="w-full" />
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-white/40">Core message</p>
             <p className="mt-2 text-lg text-white/80">Every channel teaches people how to tell when glasses are recording.</p>
