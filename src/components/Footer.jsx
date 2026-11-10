@@ -3,7 +3,7 @@ import { sources, team } from '../data/content'
 export default function Footer() {
   return (
     <footer className="border-t border-white/10 bg-black/40">
-      <div className="mx-auto grid max-w-6xl gap-12 px-4 py-16 sm:px-6 md:grid-cols-[1fr_1.4fr]">
+      <div className="mx-auto flex max-w-3xl flex-col gap-12 px-4 py-16 sm:px-6">
         <div>
           <p className="font-mono text-xs uppercase tracking-[0.25em] text-blue-300/80">Campaign concept by</p>
           <p className="mt-3 text-lg font-semibold">Group 4</p>
