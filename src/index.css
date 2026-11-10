@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --color-ink: #0b0b0f;
+  --color-paper: #fafaf9;
+  --color-accent: #0866ff;
+}
+
+html { scroll-behavior: smooth; }
+body { @apply bg-paper text-ink antialiased; }
