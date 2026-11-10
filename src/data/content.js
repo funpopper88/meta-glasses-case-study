@@ -75,13 +75,13 @@ export const faq = [
 export const team = ['Jess Hall', 'Ariana Grant', 'Mia DeBerry', 'Roxy Fusco', 'Brenna Rutherford']
 
 export const sources = [
-  'Bilyk, J. (2026, March 24). Lawsuit blitz hits Meta over AI glasses “privacy invasion.” Legal Newsline.',
-  'Clark, A. (2026, February 16). Meta stock in focus after unveiling $299 AI smart glasses to expand wearables push. TradingView.',
-  'Cruz, B., & Petrino, G. (2026, August 13). 2026 smart glasses market report and adoption statistics. Security.org.',
-  'Faisal, S. (2026, September 28). XO Kylie: Meta’s AI glasses and problematic marketing. New University, UC Irvine.',
-  'Gecsoyler, S. (2026, August 9). “I’ve definitely lost followers”: Influencers face backlash over Meta “pervert glasses” content. The Guardian.',
-  'Growcoot, M. (2026, August 10). UK venues ban Meta smart glasses en masse. PetaPixel.',
-  'Meta. (2026). Company info; Meta AI glasses: Ray-Ban Meta & Oakley Meta. meta.com.',
-  'Shah, K. (2025, June 30). Who’s ready for smart glasses – and how can brands reach them? YouGov.',
-  'Tanno, S., & Eadicicco, L. (2026, September 22). “Turn the cameras off”: London’s growing privacy pushback against smart glasses. CNN.',
+  'Jonathan Bilyk, “Lawsuit Blitz Hits Meta Over AI Glasses ‘Privacy Invasion,’” Legal Newsline, March 24, 2026.',
+  'A. Clark, “Meta Stock in Focus After Unveiling $299 AI Smart Glasses to Expand Wearables Push,” TradingView, Feb. 16, 2026.',
+  'Brett Cruz and Gene Petrino, “2026 Smart Glasses Market Report and Adoption Statistics,” Security.org, Aug. 13, 2026.',
+  'S. Faisal, “XO Kylie: Meta’s AI Glasses and Problematic Marketing,” New University, UC Irvine, Sept. 28, 2026.',
+  'Sammy Gecsoyler, “‘I’ve Definitely Lost Followers’: Influencers Face Backlash Over Meta ‘Pervert Glasses’ Content,” The Guardian, Aug. 9, 2026.',
+  'Matt Growcoot, “UK Venues Ban Meta Smart Glasses En Masse,” PetaPixel, Aug. 10, 2026.',
+  'Meta, “Company Info” and “Meta AI Glasses: Ray-Ban Meta & Oakley Meta,” Meta.com, 2026.',
+  'K. Shah, “Who’s Ready for Smart Glasses — and How Can Brands Reach Them?” YouGov, June 30, 2025.',
+  'Sophie Tanno and Lisa Eadicicco, “‘Turn the Cameras Off’: London’s Growing Privacy Pushback Against Smart Glasses,” CNN, Sept. 22, 2026.',
 ]

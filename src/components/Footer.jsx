@@ -15,7 +15,7 @@ export default function Footer() {
         </div>
         <div>
           <p className="font-mono text-xs uppercase tracking-[0.25em] text-blue-300/80">Sources</p>
-          <ul className="mt-3 space-y-2 text-xs leading-relaxed text-white/45">
+          <ul className="mt-3 space-y-2 text-sm leading-relaxed text-white/50">
             {sources.map((s) => (
               <li key={s}>{s}</li>
             ))}
