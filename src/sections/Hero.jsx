@@ -38,11 +38,11 @@ export default function Hero() {
     window.scrollTo({ top: window.scrollY - diff, behavior: 'instant' })
   }, [played])
 
-  const canvasOpacity = useTransform(smooth, [0, 0.62, 0.8], [1, 1, 0])
+  const canvasOpacity = useTransform(smooth, [0, 0.55, 0.75], [1, 1, 0])
   const introOpacity = useTransform(smooth, [0, 0.12], [1, 0])
   const hudOpacity = useTransform(smooth, [0, 0.3], [1, 0])
-  const lineOpacity = useTransform(smooth, [0.7, 0.86], [0, 1])
-  const lineY = useTransform(smooth, [0.7, 1], [16, 0])
+  const lineOpacity = useTransform(smooth, [0.68, 0.84], [0, 1])
+  const lineY = useTransform(smooth, [0.62, 1], [16, 0])
 
   const animate = !played && !reduce
 

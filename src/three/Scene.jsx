@@ -33,7 +33,7 @@ const GLASSES_Y = 0.32 // sit above center so the title fits below
 function Rig({ progress, glasses, led, pose }) {
   const { camera, size } = useThree()
   const v = useMemo(
-    () => ({ start: new THREE.Vector3(), end: new THREE.Vector3(), ledPos: new THREE.Vector3(), look: new THREE.Vector3(), base: new THREE.Vector3() }),
+    () => ({ start: new THREE.Vector3(), end: new THREE.Vector3(), ledPos: new THREE.Vector3(), dir: new THREE.Vector3(), look: new THREE.Vector3(), base: new THREE.Vector3() }),
     [],
   )
 
@@ -42,18 +42,24 @@ function Rig({ progress, glasses, led, pose }) {
     const t = ease(clamp01((progress ? progress.get() : 0) / 0.75))
     const idle = clock.elapsedTime
 
-    glasses.current.rotation.y = pose.rotY - t * 0.45 + Math.sin(idle * 0.45) * 0.03
-    glasses.current.rotation.x = pose.rotX + t * 0.06 + Math.sin(idle * 0.35) * 0.015
-    glasses.current.position.y = pose.y + Math.sin(idle * 0.8) * 0.015 * (1 - t)
+    // Tall phone screens get a three-quarter pose so the glasses can sit larger
+    const aspect = size.width / size.height
+    const p = aspect < 0.85 && pose.portrait ? { ...pose, ...pose.portrait } : pose
+
+    glasses.current.rotation.y = p.rotY + t * (p.turn ?? -0.3) + Math.sin(idle * 0.45) * 0.03
+    glasses.current.rotation.x = p.rotX + t * 0.06 + Math.sin(idle * 0.35) * 0.015
+    glasses.current.position.y = p.y + Math.sin(idle * 0.8) * 0.015 * (1 - t)
 
     // Pull the camera back on narrow screens so the frame always fits
-    const aspect = size.width / size.height
-    const baseZ = Math.max(pose.minZ ?? 5.2, (pose.fit ?? 3.7) / (2 * Math.tan(HALF_FOV) * aspect))
+    const baseZ = Math.max(p.minZ ?? 5.2, (p.fit ?? 3.7) / (2 * Math.tan(HALF_FOV) * aspect))
     v.start.set(0, 0, baseZ)
     v.base.set(0, 0, 0)
 
+    // End in front of the LED, along the direction it faces, far enough back
+    // that it reads as a glowing light rather than filling the screen
     led.current.getWorldPosition(v.ledPos)
-    v.end.copy(v.ledPos).add({ x: 0.03, y: 0, z: 0.16 })
+    led.current.getWorldDirection(v.dir)
+    v.end.copy(v.ledPos).addScaledVector(v.dir, 0.55)
 
     camera.position.lerpVectors(v.start, v.end, t)
     v.look.lerpVectors(v.base, v.ledPos, t)
@@ -62,7 +68,12 @@ function Rig({ progress, glasses, led, pose }) {
   return null
 }
 
-const HERO_POSE = { rotY: -0.08, rotX: 0.04, y: GLASSES_Y }
+const HERO_POSE = {
+  rotY: -0.08,
+  rotX: 0.04,
+  y: GLASSES_Y,
+  portrait: { rotY: 0.3, rotX: 0.14, y: 0.2, fit: 3.3, minZ: 4, turn: -0.7 },
+}
 
 // progress: scroll motion value (hero) or undefined (static).
 // state: 'recording' | 'idle' | 'covered'. pose: starting angle and height.
