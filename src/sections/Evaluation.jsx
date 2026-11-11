@@ -1,4 +1,3 @@
-import { motion } from 'motion/react'
 import Section from '../components/Section'
 import Reveal from '../components/Reveal'
 import { alsoTracked, objectives } from '../data/content'
@@ -11,18 +10,11 @@ const MAX = 50
 const TICKS = [0, 10, 20, 30, 40, 50]
 const H = 240 // plot height in px
 
-function Column({ value, color, label, delay }) {
+function Column({ value, color, label }) {
   return (
     <div className="group relative flex w-12 flex-col items-center justify-end sm:w-16" style={{ height: H }}>
       <span className="mb-1.5 text-sm font-semibold text-white">{value}%</span>
-      <motion.div
-        initial={{ height: 0 }}
-        whileInView={{ height: (value / MAX) * H }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: 'easeOut', delay }}
-        className="w-full rounded-t"
-        style={{ background: color }}
-      />
+      <div className="w-full rounded-t" style={{ height: (value / MAX) * H, background: color }} />
       {/* hover detail */}
       <span className="pointer-events-none absolute left-1/2 top-0 z-10 -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-md border border-white/10 bg-[#11141b] px-2.5 py-1.5 text-xs text-white/80 opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
         {label}: {value}%
@@ -51,8 +43,8 @@ export default function Evaluation() {
           <div className="absolute bottom-0 left-12 right-0 flex justify-around">
             {objectives.map((o, i) => (
               <div key={o.label} className="flex items-end gap-2">
-                <Column value={o.from} color={TODAY} label="Today" delay={i * 0.15} />
-                <Column value={o.to} color={GOAL} label="Goal by Oct. 2028" delay={i * 0.15 + 0.2} />
+                <Column value={o.from} color={TODAY} label="Today" />
+                <Column value={o.to} color={GOAL} label="Goal by Oct. 2028" />
               </div>
             ))}
           </div>
