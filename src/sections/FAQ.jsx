@@ -12,7 +12,19 @@ export default function FAQ() {
               {f.q}
               <Plus className="h-5 w-5 shrink-0 text-blue-300 transition-transform duration-300 group-open:rotate-45" />
             </summary>
-            <p className="mt-3 leading-relaxed text-white/60">{f.a}</p>
+            <div className="mt-3 max-w-2xl leading-relaxed text-white/65">
+              <p>{f.a}</p>
+              {f.points && (
+                <ul className="mt-3 space-y-2">
+                  {f.points.map((pt) => (
+                    <li key={pt} className="flex gap-3">
+                      <span className="mt-2.5 h-1 w-1 shrink-0 rounded-full bg-blue-300" />
+                      <span>{pt}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
           </details>
         ))}
       </div>

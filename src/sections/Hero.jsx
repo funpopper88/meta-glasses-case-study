@@ -57,7 +57,7 @@ export default function Hero() {
           </Suspense>
         </motion.div>
 
-        <motion.div style={{ opacity: animate ? hudOpacity : 1 }} className="pointer-events-none absolute inset-4 top-20 sm:inset-8 sm:top-24" aria-hidden>
+        <motion.div style={{ opacity: animate ? hudOpacity : 1 }} className={`pointer-events-none absolute inset-4 transition-[top] duration-500 sm:inset-8 ${played ? 'top-20 sm:top-24' : ''}`} aria-hidden>
           <span className={`${corner} left-0 top-0 border-l-2 border-t-2`} />
           <span className={`${corner} right-0 top-0 border-r-2 border-t-2`} />
           <span className={`${corner} bottom-0 left-0 border-b-2 border-l-2`} />

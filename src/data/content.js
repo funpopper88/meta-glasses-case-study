@@ -95,13 +95,64 @@ export const alsoTracked = [
   { title: 'Earned media', body: 'Coverage that explains how the privacy features work.' },
 ]
 
+// Each answer: a lead sentence (a) plus optional practical points.
+// verify: true = feature details from public product info, not the paper.
 export const faq = [
-  { q: 'How can I tell if glasses are recording?', a: 'Look at the front of the frame. A white capture light is on whenever the glasses take a photo, record video, or livestream.' },
-  { q: 'What if someone covers the light?', a: "Tamper detection blocks photos and video until the light is uncovered." },
-  { q: 'Where does footage go?', a: "It goes to the wearer's phone through the Meta AI app, where they control what's shared or deleted." },
-  { q: 'Are the glasses always listening?', a: 'The microphones listen for the "Hey Meta" wake word on the device. Voice is only processed after the wake word, and you can turn the wake word off or delete voice history in the Meta AI app.', verify: true },
-  { q: 'Does Meta use my photos and videos to train AI?', a: "According to Meta, photos and videos you capture stay in your camera roll and aren't used to train AI. Images you send to Meta AI, for example by asking about what you see, are handled under Meta's AI terms.", verify: true },
-  { q: 'What if I think I’m being recorded without consent?', a: 'Ask the wearer to stop. If you feel unsafe, tell venue staff or security.' },
+  {
+    q: 'How can I tell if glasses are recording?',
+    a: 'Look at the front of the frame, near the outer corner. A small white capture light turns on whenever the glasses take a photo, record video or livestream, and it faces the people around the wearer.',
+    points: [
+      'Light on: the camera is capturing right now.',
+      'Light off: no photo or video is being captured.',
+      "Not sure? It's fair to ask the wearer directly, or ask them to take the glasses off.",
+    ],
+  },
+  {
+    q: 'What if someone covers the light?',
+    a: "The glasses check that the capture light can be seen. If it's covered with tape, a sticker or a finger, they won't take photos or video and prompt the wearer to uncover it.",
+    points: ['A covered or blacked-out light is a red flag worth raising with the wearer or venue staff.'],
+    verify: true,
+  },
+  {
+    q: 'Where does footage go?',
+    a: "Photos and videos are saved on the glasses, then imported to the wearer's phone through the Meta AI app. Nothing is posted automatically: the wearer chooses what to keep, share or delete.",
+    points: ['Livestreams are the exception. They go out in real time, and the capture light stays on the whole time.'],
+    verify: true,
+  },
+  {
+    q: 'Are the glasses always listening?',
+    a: 'The microphones listen only for the "Hey Meta" wake word, and that check happens on the glasses. After the wake word, the request is sent to Meta to be processed.',
+    points: [
+      'Turn the wake word off in the Meta AI app to use the button only.',
+      "Review or delete voice recordings in the app's privacy settings.",
+      'Use the power switch to turn the glasses fully off, including the camera and microphones.',
+    ],
+    verify: true,
+  },
+  {
+    q: 'Does Meta use my photos and videos to train AI?',
+    a: "According to Meta, photos and videos you capture stay in your camera roll and aren't used to train its AI.",
+    points: [
+      "If you ask Meta AI about something you're looking at, that image is sent to Meta AI and handled under Meta's AI terms, which can include improving its AI.",
+      'To keep an image out of that process, capture it normally instead of asking Meta AI about it.',
+    ],
+    verify: true,
+  },
+  {
+    q: 'What should I do if I think I’m being recorded without consent?',
+    a: "You don't have to put up with it.",
+    points: [
+      'Ask the wearer to stop recording, or to show you the capture light is off.',
+      'If they refuse, tell venue staff or security. Many venues have rules about recording devices.',
+      'If you feel unsafe, or think you were filmed somewhere private like a restroom or changing area, contact local authorities.',
+      'Report footage posted without your consent on the platform where it appears.',
+    ],
+  },
+  {
+    q: 'Are smart glasses allowed everywhere?',
+    a: 'No. Businesses can set their own rules, and some venues, including UK pub chain Wetherspoons, ban recording devices.',
+    points: ['Responsible wearers follow posted rules and take the glasses off in private spaces like restrooms, locker rooms and medical offices.'],
+  },
 ]
 
 export const team = ['Jess Hall', 'Ariana Grant', 'Mia DeBerry', 'Roxy Fusco', 'Brenna Rutherford']

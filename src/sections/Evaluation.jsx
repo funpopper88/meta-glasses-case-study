@@ -87,15 +87,18 @@ export default function Evaluation() {
           {objectives.map((o) => <Row key={o.label} {...o} />)}
         </div>
 
-        <table className="sr-only">
-          <caption>Objective baselines and October 2028 targets</caption>
-          <thead><tr><th>Objective</th><th>Today</th><th>Goal</th></tr></thead>
-          <tbody>
-            {objectives.map((o) => (
-              <tr key={o.label}><td>{o.short}</td><td>{o.from}%</td><td>{o.to}%</td></tr>
-            ))}
-          </tbody>
-        </table>
+        {/* tables ignore sr-only sizing, so the wrapper does the hiding */}
+        <div className="sr-only">
+          <table>
+            <caption>Objective baselines and October 2028 targets</caption>
+            <thead><tr><th>Objective</th><th>Today</th><th>Goal</th></tr></thead>
+            <tbody>
+              {objectives.map((o) => (
+                <tr key={o.label}><td>{o.short}</td><td>{o.from}%</td><td>{o.to}%</td></tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
         <div className="mt-10 border-t border-white/10 pt-6">
           <p className="font-mono text-xs uppercase tracking-widest text-white/40">Also tracked</p>
