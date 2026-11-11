@@ -13,7 +13,10 @@
   }
 }
 
-html { scroll-behavior: smooth; background: #03050a; }
+/* overflow-anchor: none — the hero collapses once scrolled past and corrects the
+   scroll position itself; browser scroll anchoring would correct it a second
+   time and throw the page back to the top. */
+html { scroll-behavior: smooth; background: #03050a; overflow-anchor: none; }
 body { @apply bg-ink text-white antialiased; }
 ::selection { background: rgb(59 130 246 / 0.4); }
 
