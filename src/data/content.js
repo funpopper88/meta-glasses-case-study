@@ -3,11 +3,12 @@
 // Citations use AP style everywhere.
 
 export const nav = [
-  { id: 'research', label: 'Research' },
-  { id: 'action', label: 'Action' },
-  { id: 'communication', label: 'Communication' },
-  { id: 'evaluation', label: 'Evaluation' },
+  { id: 'research', label: 'Research', race: true },
+  { id: 'action', label: 'Action', race: true },
+  { id: 'communication', label: 'Communication', race: true },
+  { id: 'evaluation', label: 'Evaluation', race: true },
   { id: 'faq', label: 'Q&A' },
+  { id: 'credits', label: 'Credits' },
 ]
 
 export const research = {

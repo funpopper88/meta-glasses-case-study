@@ -2,7 +2,7 @@ import { sources, team } from '../data/content'
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/10 bg-black/40">
+    <footer id="credits" className="scroll-mt-16 border-t border-white/10 bg-black/40">
       <div className="mx-auto flex max-w-3xl flex-col gap-12 px-4 py-16 sm:px-6">
         <div>
           <p className="font-mono text-xs uppercase tracking-[0.25em] text-blue-300/80">Pitch by</p>
