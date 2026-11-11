@@ -45,6 +45,8 @@ export const objectives = [
     to: 20,
     text: 'Increase the share of Meta smart glasses users ages 18 to 40 who strongly trust Meta to protect their data from 3% to 20% by October 2028.',
     note: 'Baseline: 3% of smart glasses users strongly trust their device, according to Security.org, Aug. 13, 2026.',
+    short: 'Users ages 18 to 40 who strongly trust Meta with their data',
+    measure: 'A repeatable trust survey of Meta glasses users, run at launch, midpoint and finish.',
   },
   {
     label: 'Objective 2',
@@ -52,6 +54,8 @@ export const objectives = [
     to: 40,
     text: 'Increase the share of smart glasses purchased by women ages 18 to 30 to 40% by October 2028.',
     note: 'Reference point: 35% of smart glasses considerers are women, according to YouGov, June 30, 2025.',
+    short: 'Share of smart glasses purchased by women ages 18 to 30',
+    measure: 'Purchase data broken out by gender and age.',
   },
 ]
 
@@ -85,9 +89,7 @@ export const ledStates = {
   covered: { tag: 'LIGHT COVERED', tone: 'text-amber-400', text: 'The light is covered, so the glasses block capture until it is uncovered.' },
 }
 
-export const measures = [
-  { title: 'Trust', body: 'Share of Meta glasses users ages 18 to 40 who strongly trust Meta with their data.' },
-  { title: 'Purchases', body: 'Share of smart glasses purchased by women ages 18 to 30.' },
+export const alsoTracked = [
   { title: 'Sentiment', body: 'How people talk about smart glasses online, including use of the negative label.' },
   { title: 'Earned media', body: 'Coverage that explains how the privacy features work.' },
 ]
