@@ -16,6 +16,19 @@ function Label({ item }) {
 export default function Nav() {
   const [active, setActive] = useState('')
   const [open, setOpen] = useState(false)
+  // Hidden until the reader first scrolls past the glasses animation, then stays
+  const [shown, setShown] = useState(false)
+
+  useEffect(() => {
+    if (shown) return
+    const check = () => {
+      const hero = document.getElementById('top')
+      if (!hero || hero.getBoundingClientRect().bottom <= 64) setShown(true)
+    }
+    check()
+    window.addEventListener('scroll', check, { passive: true })
+    return () => window.removeEventListener('scroll', check)
+  }, [shown])
 
   useEffect(() => {
     const io = new IntersectionObserver(
@@ -38,7 +51,13 @@ export default function Nav() {
   }, [])
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-ink/60 backdrop-blur-xl">
+    <header
+      aria-hidden={!shown}
+      inert={!shown}
+      className={`fixed inset-x-0 top-0 z-50 border-b border-white/5 bg-ink/60 backdrop-blur-xl transition-transform duration-500 ease-out ${
+        shown ? 'translate-y-0' : '-translate-y-full'
+      }`}
+    >
       <nav className="mx-auto flex h-16 max-w-6xl items-center justify-end px-4 sm:px-6 md:justify-center" aria-label="Sections">
         <ul className="hidden gap-1 md:flex">
           {nav.map((s) => (
