@@ -35,9 +35,8 @@ body { @apply bg-ink text-white antialiased; }
 }
 
 .card {
-  @apply rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm transition-colors;
+  @apply rounded-2xl border border-blue-300/25 bg-white/[0.03] backdrop-blur-sm;
 }
-.card:hover { @apply border-blue-300/25; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
