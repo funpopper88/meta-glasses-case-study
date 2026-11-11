@@ -1,6 +1,5 @@
 import Section from '../components/Section'
 import Reveal from '../components/Reveal'
-import CountUp from '../components/CountUp'
 import { keyStats, research } from '../data/content'
 
 function StateCard({ title, items, accent, tone }) {
@@ -21,7 +20,7 @@ export default function Research() {
       <div className="grid gap-4 md:grid-cols-3">
         {keyStats.map((s, i) => (
           <Reveal key={s.label} delay={i * 0.06} className="card flex flex-col p-8">
-            <p className="text-6xl font-extrabold tracking-tight"><CountUp value={s.value} suffix={s.suffix} /></p>
+            <p className="text-6xl font-extrabold tracking-tight">{s.value}{s.suffix}</p>
             <p className="mt-3 flex-1 leading-relaxed text-white/65">{s.label}</p>
             <p className="mt-6 border-t border-white/10 pt-4 font-mono text-[10px] uppercase tracking-widest text-white/30">Source: {s.source}</p>
           </Reveal>
