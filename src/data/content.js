@@ -81,9 +81,9 @@ export const audiences = [
 ]
 
 export const ledStates = {
-  idle: { tag: 'LED OFF', tone: 'text-white/60', text: 'No light means the camera is not capturing photos or video.' },
-  recording: { tag: 'CAPTURE LED ON', tone: 'text-rec', text: 'The light is on: a photo, video, or livestream is being captured right now.' },
-  covered: { tag: 'TAMPER DETECTED', tone: 'text-amber-400', text: 'The light is covered, so capture is blocked until it is uncovered.' },
+  idle: { tag: 'LIGHT OFF', tone: 'text-white/50', text: 'No light means the camera is not capturing photos or video.' },
+  recording: { tag: 'CAPTURE LIGHT ON', tone: 'text-white', text: 'The white light is on: a photo, video, or livestream is being captured right now.' },
+  covered: { tag: 'LIGHT COVERED', tone: 'text-amber-400', text: 'The light is covered, so the glasses block capture until it is uncovered.' },
 }
 
 export const measures = [
@@ -94,7 +94,7 @@ export const measures = [
 ]
 
 export const faq = [
-  { q: 'How can I tell if glasses are recording?', a: 'Look at the front of the frame. The capture light is on whenever the glasses take a photo, record video, or livestream.' },
+  { q: 'How can I tell if glasses are recording?', a: 'Look at the front of the frame. A white capture light is on whenever the glasses take a photo, record video, or livestream.' },
   { q: 'What if someone covers the light?', a: "Tamper detection blocks photos and video until the light is uncovered." },
   { q: 'Where does footage go?', a: "It goes to the wearer's phone through the Meta AI app, where they control what's shared or deleted." },
   { q: 'Are the glasses always listening?', a: 'The microphones listen for the "Hey Meta" wake word on the device. Voice is only processed after the wake word, and you can turn the wake word off or delete voice history in the Meta AI app.', verify: true },

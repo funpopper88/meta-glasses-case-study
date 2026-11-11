@@ -6,7 +6,8 @@ import * as THREE from 'three'
 // product's front view: cat-eye front with upswept outer wings, a dip in the top
 // edge at the bridge, a narrow keyhole nose cut-out, large almond lenses with a
 // thin silver ring, round camera/LED dots on the wings, thick glossy acetate,
-// thick temples with down-turned ear hooks. LED on the viewer's right.
+// thick temples with down-turned ear hooks. White capture LED on the viewer's
+// right: steady while recording, off otherwise.
 
 const WRAP = 0.1 // front wrap: z -= WRAP * x^2
 const DEPTH = 0.14
@@ -172,9 +173,9 @@ export default function Glasses3D({ state = 'recording', ledRef, groupRef, ...pr
     c.width = c.height = 128
     const g = c.getContext('2d')
     const gr = g.createRadialGradient(64, 64, 0, 64, 64, 64)
-    gr.addColorStop(0, 'rgba(255,90,90,1)')
-    gr.addColorStop(0.2, 'rgba(255,40,40,0.65)')
-    gr.addColorStop(1, 'rgba(255,0,0,0)')
+    gr.addColorStop(0, 'rgba(255,255,255,1)')
+    gr.addColorStop(0.2, 'rgba(225,235,255,0.6)')
+    gr.addColorStop(1, 'rgba(200,215,255,0)')
     g.fillStyle = gr
     g.fillRect(0, 0, 128, 128)
     return new THREE.CanvasTexture(c)
@@ -182,10 +183,11 @@ export default function Glasses3D({ state = 'recording', ledRef, groupRef, ...pr
 
   useFrame(({ clock }) => {
     if (!led.current) return
-    const on = recording ? (Math.sin(clock.elapsedTime * 4.5) + 1) / 2 : 0
-    led.current.material.emissiveIntensity = 0.6 + on * 3
-    if (ledLight.current) ledLight.current.intensity = on * 1.4
-    if (glow.current) glow.current.material.opacity = 0.15 + on * 0.85
+    // Like the real glasses: a steady white light while capturing, fully off otherwise
+    const on = recording ? 0.94 + Math.sin(clock.elapsedTime * 2) * 0.06 : 0
+    led.current.material.emissiveIntensity = on * 3.2
+    if (ledLight.current) ledLight.current.intensity = on * 1.2
+    if (glow.current) glow.current.material.opacity = on * 0.9
   })
 
   const templeX = 1.4
@@ -245,7 +247,7 @@ export default function Glasses3D({ state = 'recording', ledRef, groupRef, ...pr
         </mesh>
         <mesh ref={led} scale={[1, 1, 0.5]} position={[0, 0, 0.006]}>
           <sphereGeometry args={[0.018, 24, 24]} />
-          <meshStandardMaterial color="#ff2a2a" emissive="#ff1a1a" emissiveIntensity={6} toneMapped={false} />
+          <meshPhysicalMaterial color="#14161b" emissive="#f4f7ff" emissiveIntensity={0} roughness={0.1} clearcoat={1} toneMapped={false} />
         </mesh>
         <sprite ref={glow} scale={[0.2, 0.2, 1]} position={[0, 0, 0.01]}>
           <spriteMaterial map={glowTex} transparent depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
@@ -256,7 +258,7 @@ export default function Glasses3D({ state = 'recording', ledRef, groupRef, ...pr
             <meshStandardMaterial color="#8b8f99" roughness={0.6} />
           </mesh>
         )}
-        <pointLight ref={ledLight} color="#ff2a2a" distance={0.5} decay={2} position={[0, 0, 0.05]} />
+        <pointLight ref={ledLight} color="#eef3ff" distance={0.5} decay={2} position={[0, 0, 0.05]} />
       </OnFront>
     </group>
   )
