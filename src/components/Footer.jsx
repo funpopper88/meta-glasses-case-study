@@ -6,8 +6,8 @@ export default function Footer() {
       <div className="mx-auto flex max-w-3xl flex-col gap-12 px-4 py-16 sm:px-6">
         <div>
           <p className="font-mono text-xs uppercase tracking-[0.25em] text-blue-300/80">Pitch by</p>
-          <p className="mt-3 text-sm leading-relaxed text-white/50">
-            {team.join(' · ')} <span className="text-white/30">/</span> <span className="text-white/80">Group 4</span>
+          <p className="mt-3 text-sm leading-relaxed text-white">
+            {team.join(' · ')} <span className="text-white/30">/</span> <span className="text-white/50">Group 4</span>
           </p>
           <p className="mt-6 text-xs leading-relaxed text-white/35">
             A PR pitch created for APRD 3105: Public Relations Strategy, Department of Advertising, Public Relations,
