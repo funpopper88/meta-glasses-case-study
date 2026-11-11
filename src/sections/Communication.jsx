@@ -21,8 +21,10 @@ export default function Communication() {
       <div className="grid gap-4 md:grid-cols-3">
         {audiences.map((a, i) => (
           <Reveal key={a.name} delay={i * 0.08} className="card flex flex-col p-7">
-            <p className="font-mono text-xs text-white/40">Ages {a.age}</p>
-            <h3 className="mt-2 text-xl font-semibold">{a.name}</h3>
+            <h3 className="text-2xl font-semibold leading-snug tracking-tight">
+              {a.name}
+              <span className="block text-blue-200">Ages {a.age}</span>
+            </h3>
             <p className="mt-2 text-sm leading-relaxed text-white/55">{a.who}</p>
             <p className="mt-auto border-t border-white/10 pt-4 text-sm leading-relaxed text-white/80">
               <span className="mb-1 block font-mono text-[10px] uppercase tracking-widest text-blue-300/70">Approach</span>
