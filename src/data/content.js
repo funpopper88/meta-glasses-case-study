@@ -29,9 +29,8 @@ export const research = {
 
 export const keyStats = [
   { value: 73, suffix: '%', label: "Meta's share of global smart glasses sales, first half of 2025", source: 'TradingView, Feb. 16, 2026' },
-  { value: 3, suffix: '%', label: 'of smart glasses users strongly trust their device', source: 'Security.org, Aug. 13, 2026' },
   { value: 78, suffix: '%', label: 'of adult women are concerned about secret recording in public', source: 'Security.org, Aug. 13, 2026' },
-  { value: 35, suffix: '%', label: 'of smart glasses considerers are women', source: 'YouGov, June 30, 2025' },
+  { value: 3, suffix: '%', label: 'of smart glasses users strongly trust their device', source: 'Security.org, Aug. 13, 2026' },
 ]
 
 export const goal =
