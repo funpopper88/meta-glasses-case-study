@@ -42,3 +42,10 @@ body { @apply bg-ink text-white antialiased; }
   html { scroll-behavior: auto; }
   .animate-rec { animation: none; }
 }
+
+/* Blue page scrollbar */
+html { scrollbar-color: #3a6fd8 #05070c; scrollbar-width: thin; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #05070c; }
+::-webkit-scrollbar-thumb { background: #3a6fd8; border-radius: 999px; border: 2px solid #05070c; }
+::-webkit-scrollbar-thumb:hover { background: #5b8ff0; }
