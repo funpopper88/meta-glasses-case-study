@@ -2,7 +2,7 @@ import { Suspense, lazy, useCallback, useEffect, useLayoutEffect, useRef, useSta
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
 import { ChevronDown } from 'lucide-react'
 import { team } from '../data/content'
-import { IS_MOBILE } from '../device'
+import { HAS_MOUSE, IS_MOBILE } from '../device'
 import glassesStill from '../assets/glasses-recording.webp'
 
 // 3D scene is code-split so the page text paints before three.js loads
@@ -70,15 +70,15 @@ function DesktopHero() {
 
         <motion.div style={{ opacity: animate ? canvasOpacity : 1 }} className="absolute inset-0 will-change-[opacity]">
           <Suspense fallback={null}>
-            <GlassesCanvas progress={animate ? smooth : undefined} onLedHover={onLedHover} className="h-full w-full" />
+            <GlassesCanvas progress={animate ? smooth : undefined} onLedHover={HAS_MOUSE ? onLedHover : undefined} className="h-full w-full" />
           </Suspense>
         </motion.div>
 
         <motion.div style={{ opacity: animate ? hudOpacity : 1 }} className={`pointer-events-none absolute inset-4 transition-[top] duration-500 sm:inset-8 ${played ? 'top-20 sm:top-24' : ''}`} aria-hidden>
-          <span className={`${cornerBase} ${cornerTone} origin-top-left left-0 top-0 border-l-2 border-t-2`} />
-          <span className={`${cornerBase} ${cornerTone} origin-top-right right-0 top-0 border-r-2 border-t-2`} />
-          <span className={`${cornerBase} ${cornerTone} origin-bottom-left bottom-0 left-0 border-b-2 border-l-2`} />
-          <span className={`${cornerBase} ${cornerTone} origin-bottom-right bottom-0 right-0 border-b-2 border-r-2`} />
+          <span className={`${cornerBase} ${cornerTone} origin-top-left left-0 top-0 border-l-[3px] border-t-[3px]`} />
+          <span className={`${cornerBase} ${cornerTone} origin-top-right right-0 top-0 border-r-[3px] border-t-[3px]`} />
+          <span className={`${cornerBase} ${cornerTone} origin-bottom-left bottom-0 left-0 border-b-[3px] border-l-[3px]`} />
+          <span className={`${cornerBase} ${cornerTone} origin-bottom-right bottom-0 right-0 border-b-[3px] border-r-[3px]`} />
           <div className={`absolute right-4 top-3 flex items-center gap-2 font-mono text-xs tracking-widest transition-colors ${covered ? 'text-amber-300' : 'text-white/80'}`}>
             <span className={`h-2 w-2 rounded-full ${covered ? 'bg-white/30' : 'animate-rec bg-rec shadow-[0_0_10px_#ff3b3b]'}`} />
             {covered ? 'LIGHT COVERED' : 'REC'}
@@ -110,10 +110,10 @@ function MobileHero() {
     <section id="top" className="relative h-svh overflow-hidden">
       <div className="pointer-events-none absolute left-1/2 top-[38%] h-[60vmin] w-[90vmin] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#0d2257]/70 blur-[90px]" />
       <div className="pointer-events-none absolute inset-4" aria-hidden>
-        <span className={`${corner} left-0 top-0 border-l-2 border-t-2`} />
-        <span className={`${corner} right-0 top-0 border-r-2 border-t-2`} />
-        <span className={`${corner} bottom-0 left-0 border-b-2 border-l-2`} />
-        <span className={`${corner} bottom-0 right-0 border-b-2 border-r-2`} />
+        <span className={`${corner} left-0 top-0 border-l-[3px] border-t-[3px]`} />
+        <span className={`${corner} right-0 top-0 border-r-[3px] border-t-[3px]`} />
+        <span className={`${corner} bottom-0 left-0 border-b-[3px] border-l-[3px]`} />
+        <span className={`${corner} bottom-0 right-0 border-b-[3px] border-r-[3px]`} />
         <div className="absolute right-4 top-3 flex items-center gap-2 font-mono text-xs tracking-widest text-white/80">
           <span className="h-2 w-2 animate-rec rounded-full bg-rec shadow-[0_0_10px_#ff3b3b]" />
           REC
