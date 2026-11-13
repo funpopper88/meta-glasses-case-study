@@ -1,6 +1,7 @@
 import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { LITE } from './quality'
 
 // Procedural Meta Starfire Kylie Edition-style smart glasses, traced from the
 // product's front view: cat-eye front with upswept outer wings, a dip in the top
@@ -109,15 +110,15 @@ function useGeometries() {
       bevelEnabled: true,
       bevelThickness: BEVEL_T,
       bevelSize: 0.035,
-      bevelSegments: 10,
-      curveSegments: 80,
+      bevelSegments: LITE ? 4 : 10,
+      curveSegments: LITE ? 36 : 80,
     })
     front.translate(0, 0, -DEPTH / 2)
     front.scale(1, VSCALE, 1)
     wrap(front)
 
     const lenses = [1, -1].map((side) => {
-      const g = new THREE.ExtrudeGeometry(lensPath(side, 1.07, THREE.Shape), { depth: 0.022, bevelEnabled: false, curveSegments: 80 })
+      const g = new THREE.ExtrudeGeometry(lensPath(side, 1.07, THREE.Shape), { depth: 0.022, bevelEnabled: false, curveSegments: LITE ? 36 : 80 })
       g.translate(0, 0, -0.011)
       g.scale(1, VSCALE, 1)
       return wrap(g)
@@ -127,7 +128,7 @@ function useGeometries() {
     const rings = [1, -1].map((side) => {
       const r = lensPath(side, 1.01, THREE.Shape)
       r.holes.push(lensPath(side, 0.975))
-      const g = new THREE.ShapeGeometry(r, 80)
+      const g = new THREE.ShapeGeometry(r, LITE ? 36 : 80)
       g.translate(0, 0, 0.014)
       g.scale(1, VSCALE, 1)
       return wrap(g)
@@ -138,8 +139,8 @@ function useGeometries() {
       bevelEnabled: true,
       bevelThickness: 0.025,
       bevelSize: 0.022,
-      bevelSegments: 6,
-      curveSegments: 40,
+      bevelSegments: LITE ? 3 : 6,
+      curveSegments: LITE ? 20 : 40,
     })
     temple.translate(0, 0, -0.03)
     temple.rotateY(Math.PI / 2) // length runs back along -z, thickness along x

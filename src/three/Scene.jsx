@@ -1,13 +1,14 @@
-import { useMemo, useRef } from 'react'
+import { Component, useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import { Environment, Lightformer } from '@react-three/drei'
 import * as THREE from 'three'
 import Glasses3D from './Glasses3D'
+import { LITE, webglAvailable } from './quality'
 
 // Studio lighting built from light panels (no HDR download needed)
 function Studio() {
   return (
-    <Environment resolution={256} frames={1}>
+    <Environment resolution={LITE ? 64 : 256} frames={1}>
       <Lightformer form="rect" intensity={4} position={[0, 4, 3]} scale={[8, 1.2, 1]} />
       <Lightformer form="rect" intensity={1.5} position={[-4, 1, 3]} rotation-y={Math.PI / 3} scale={[3, 1.5, 1]} />
       <Lightformer form="rect" intensity={1.2} position={[0, -3, 2]} scale={[8, 0.6, 1]} />
@@ -75,20 +76,61 @@ const HERO_POSE = {
   portrait: { rotY: 0.3, rotX: 0.14, y: 0.2, fit: 3.3, minZ: 4, turn: -0.7 },
 }
 
+// If 3D fails (no WebGL, out of GPU memory), drop it quietly so the rest of
+// the page still loads.
+class Safe3D extends Component {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+  componentDidCatch(err) {
+    console.warn('3D glasses disabled:', err)
+  }
+  render() {
+    return this.state.failed ? null : this.props.children
+  }
+}
+
+// Only keep a WebGL context alive while the canvas is on or near the screen,
+// so phones never hold two 3D scenes in memory at once.
+function useNearScreen(ref, margin = '300px') {
+  const [near, setNear] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const io = new IntersectionObserver(([e]) => setNear(e.isIntersecting), { rootMargin: margin })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [ref, margin])
+  return near
+}
+
+const CAN_3D = typeof window !== 'undefined' && webglAvailable()
+
 // progress: scroll motion value (hero) or undefined (static).
 // state: 'recording' | 'idle' | 'covered'. pose: starting angle and height.
 export default function GlassesCanvas({ progress, state = 'recording', pose = HERO_POSE, className = '' }) {
   const glasses = useRef()
   const led = useRef()
+  const box = useRef()
+  const near = useNearScreen(box)
   return (
-    <div className={className}>
-      <Canvas camera={{ position: [0, 0, 4.4], fov: 32 }} dpr={[1, 1.5]} gl={{ antialias: true, powerPreference: 'high-performance' }}>
-        <Studio />
-        <ambientLight intensity={0.15} />
-        <directionalLight position={[2, 4, 5]} intensity={0.6} />
-        <Glasses3D state={state} groupRef={glasses} ledRef={led} position={[0, pose.y, 0]} />
-        <Rig progress={progress} glasses={glasses} led={led} pose={pose} />
-      </Canvas>
+    <div ref={box} className={className}>
+      {CAN_3D && near && (
+        <Safe3D>
+          <Canvas
+            camera={{ position: [0, 0, 4.4], fov: 32 }}
+            dpr={LITE ? 1 : [1, 1.5]}
+            gl={{ antialias: !LITE, powerPreference: LITE ? 'default' : 'high-performance' }}
+          >
+            <Studio />
+            <ambientLight intensity={0.15} />
+            <directionalLight position={[2, 4, 5]} intensity={0.6} />
+            <Glasses3D state={state} groupRef={glasses} ledRef={led} position={[0, pose.y, 0]} />
+            <Rig progress={progress} glasses={glasses} led={led} pose={pose} />
+          </Canvas>
+        </Safe3D>
+      )}
     </div>
   )
 }
