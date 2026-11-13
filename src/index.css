@@ -11,6 +11,13 @@
     0%, 100% { opacity: 1; }
     50% { opacity: 0.15; }
   }
+
+  /* HUD corners when the capture light is covered: pulse yellow to red */
+  --animate-warn: warn 1.1s ease-in-out infinite;
+  @keyframes warn {
+    0%, 100% { border-color: #facc15; filter: drop-shadow(0 0 6px #facc15aa); }
+    50% { border-color: #ef4444; filter: drop-shadow(0 0 12px #ef4444); }
+  }
 }
 
 /* overflow-anchor: none — the hero collapses once scrolled past and corrects the
@@ -49,3 +56,6 @@ html { scrollbar-color: #3a6fd8 #05070c; scrollbar-width: thin; }
 ::-webkit-scrollbar-track { background: #05070c; }
 ::-webkit-scrollbar-thumb { background: #3a6fd8; border-radius: 999px; border: 2px solid #05070c; }
 ::-webkit-scrollbar-thumb:hover { background: #5b8ff0; }
+@media (prefers-reduced-motion: reduce) {
+  .animate-warn { animation: none; border-color: #facc15; }
+}

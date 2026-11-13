@@ -31,12 +31,29 @@ const GLASSES_Y = 0.32 // sit above center so the title fits below
 // Scroll-driven camera: flies from a front view to the capture LED while the
 // glasses turn slowly. `progress` is a (spring-smoothed) motion value 0..1, or
 // undefined for a static pose.
-function Rig({ progress, glasses, led, pose }) {
-  const { camera, size } = useThree()
+function Rig({ progress, glasses, led, pose, onLedHover }) {
+  const { camera, size, gl } = useThree()
   const v = useMemo(
-    () => ({ start: new THREE.Vector3(), end: new THREE.Vector3(), ledPos: new THREE.Vector3(), dir: new THREE.Vector3(), look: new THREE.Vector3(), base: new THREE.Vector3() }),
+    () => ({ start: new THREE.Vector3(), end: new THREE.Vector3(), ledPos: new THREE.Vector3(), dir: new THREE.Vector3(), look: new THREE.Vector3(), base: new THREE.Vector3(), ndc: new THREE.Vector3() }),
     [],
   )
+  // Mouse position tracked on the window (text overlays sit above the canvas)
+  const mouse = useRef({ x: 0, y: 0, in: false })
+  const hovering = useRef(false)
+  useEffect(() => {
+    if (!onLedHover) return
+    const move = (e) => {
+      if (e.pointerType !== 'mouse') return
+      mouse.current = { x: e.clientX, y: e.clientY, in: true }
+    }
+    const leave = () => (mouse.current.in = false)
+    window.addEventListener('pointermove', move, { passive: true })
+    document.documentElement.addEventListener('mouseleave', leave)
+    return () => {
+      window.removeEventListener('pointermove', move)
+      document.documentElement.removeEventListener('mouseleave', leave)
+    }
+  }, [onLedHover])
 
   useFrame(({ clock }) => {
     if (!glasses.current || !led.current) return
@@ -65,6 +82,24 @@ function Rig({ progress, glasses, led, pose }) {
     camera.position.lerpVectors(v.start, v.end, t)
     v.look.lerpVectors(v.base, v.ledPos, t)
     camera.lookAt(v.look)
+
+    // Is the mouse over the capture light? Only before the zoom starts (or
+    // once the hero is static), so it can't trigger mid-flight.
+    if (onLedHover) {
+      let over = false
+      if (t < 0.02 && mouse.current.in) {
+        camera.updateMatrixWorld()
+        v.ndc.copy(v.ledPos).project(camera)
+        const r = gl.domElement.getBoundingClientRect()
+        const sx = r.left + ((v.ndc.x + 1) / 2) * r.width
+        const sy = r.top + ((1 - v.ndc.y) / 2) * r.height
+        over = Math.hypot(sx - mouse.current.x, sy - mouse.current.y) < 30
+      }
+      if (over !== hovering.current) {
+        hovering.current = over
+        onLedHover(over)
+      }
+    }
   })
   return null
 }
@@ -109,7 +144,7 @@ const CAN_3D = typeof window !== 'undefined' && webglAvailable()
 
 // progress: scroll motion value (hero) or undefined (static).
 // state: 'recording' | 'idle' | 'covered'. pose: starting angle and height.
-export default function GlassesCanvas({ progress, state = 'recording', pose = HERO_POSE, className = '' }) {
+export default function GlassesCanvas({ progress, state = 'recording', pose = HERO_POSE, className = '', onLedHover }) {
   const glasses = useRef()
   const led = useRef()
   const box = useRef()
@@ -127,7 +162,7 @@ export default function GlassesCanvas({ progress, state = 'recording', pose = HE
             <ambientLight intensity={0.15} />
             <directionalLight position={[2, 4, 5]} intensity={0.6} />
             <Glasses3D state={state} groupRef={glasses} ledRef={led} position={[0, pose.y, 0]} />
-            <Rig progress={progress} glasses={glasses} led={led} pose={pose} />
+            <Rig progress={progress} glasses={glasses} led={led} pose={pose} onLedHover={onLedHover} />
           </Canvas>
         </Safe3D>
       )}

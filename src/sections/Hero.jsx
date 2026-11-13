@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
 import { ChevronDown } from 'lucide-react'
 import { team } from '../data/content'
@@ -8,7 +8,8 @@ import glassesStill from '../assets/glasses-recording.webp'
 // 3D scene is code-split so the page text paints before three.js loads
 const GlassesCanvas = lazy(() => import('../three/Scene'))
 
-const corner = 'absolute h-8 w-8 border-blue-300/40'
+const cornerBase = 'absolute h-8 w-8 transition-colors duration-300'
+const corner = `${cornerBase} border-blue-300/40`
 
 function DesktopHero() {
   const ref = useRef(null)
@@ -48,6 +49,19 @@ function DesktopHero() {
 
   const animate = !played && !reduce
 
+  // Hold the mouse over the capture light for a full second and the
+  // "camera" reacts as if the light were covered: warning corners, REC stops.
+  const [covered, setCovered] = useState(false)
+  const holdTimer = useRef(null)
+  const onLedHover = useCallback((over) => {
+    clearTimeout(holdTimer.current)
+    if (over) holdTimer.current = setTimeout(() => setCovered(true), 1000)
+    else setCovered(false)
+  }, [])
+  useEffect(() => () => clearTimeout(holdTimer.current), [])
+
+  const cornerTone = covered ? 'animate-warn' : 'border-blue-300/40'
+
   return (
     <section ref={ref} id="top" className={`relative ${played ? 'h-svh' : 'h-[280vh]'}`}>
       <div className="sticky top-0 h-svh overflow-hidden">
@@ -55,18 +69,18 @@ function DesktopHero() {
 
         <motion.div style={{ opacity: animate ? canvasOpacity : 1 }} className="absolute inset-0 will-change-[opacity]">
           <Suspense fallback={null}>
-            <GlassesCanvas progress={animate ? smooth : undefined} className="h-full w-full" />
+            <GlassesCanvas progress={animate ? smooth : undefined} onLedHover={onLedHover} className="h-full w-full" />
           </Suspense>
         </motion.div>
 
         <motion.div style={{ opacity: animate ? hudOpacity : 1 }} className={`pointer-events-none absolute inset-4 transition-[top] duration-500 sm:inset-8 ${played ? 'top-20 sm:top-24' : ''}`} aria-hidden>
-          <span className={`${corner} left-0 top-0 border-l-2 border-t-2`} />
-          <span className={`${corner} right-0 top-0 border-r-2 border-t-2`} />
-          <span className={`${corner} bottom-0 left-0 border-b-2 border-l-2`} />
-          <span className={`${corner} bottom-0 right-0 border-b-2 border-r-2`} />
-          <div className="absolute right-4 top-3 flex items-center gap-2 font-mono text-xs tracking-widest text-white/80">
-            <span className="h-2 w-2 animate-rec rounded-full bg-rec shadow-[0_0_10px_#ff3b3b]" />
-            REC
+          <span className={`${cornerBase} ${cornerTone} left-0 top-0 border-l-2 border-t-2`} />
+          <span className={`${cornerBase} ${cornerTone} right-0 top-0 border-r-2 border-t-2`} />
+          <span className={`${cornerBase} ${cornerTone} bottom-0 left-0 border-b-2 border-l-2`} />
+          <span className={`${cornerBase} ${cornerTone} bottom-0 right-0 border-b-2 border-r-2`} />
+          <div className={`absolute right-4 top-3 flex items-center gap-2 font-mono text-xs tracking-widest transition-colors ${covered ? 'text-amber-300' : 'text-white/80'}`}>
+            <span className={`h-2 w-2 rounded-full ${covered ? 'bg-white/30' : 'animate-rec bg-rec shadow-[0_0_10px_#ff3b3b]'}`} />
+            {covered ? 'LIGHT COVERED' : 'REC'}
           </div>
         </motion.div>
 
