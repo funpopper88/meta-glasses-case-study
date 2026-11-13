@@ -2,6 +2,12 @@ import { Suspense, lazy, useState } from 'react'
 import Section from '../components/Section'
 import Reveal from '../components/Reveal'
 import { audiences, ledStates, strategy } from '../data/content'
+import { IS_MOBILE } from '../device'
+import stillRecording from '../assets/glasses-recording.webp'
+import stillIdle from '../assets/glasses-idle.webp'
+import stillCovered from '../assets/glasses-covered.webp'
+
+const STILLS = { recording: stillRecording, idle: stillIdle, covered: stillCovered }
 
 const GlassesCanvas = lazy(() => import('../three/Scene'))
 const DEMO_POSE = { rotY: -0.06, rotX: 0.03, y: 0, minZ: 3.4, fit: 3.3 }
@@ -38,9 +44,24 @@ export default function Communication() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(13,34,87,0.7),transparent_70%)]" />
         <div className="relative grid items-center gap-8 lg:grid-cols-[1.4fr_1fr]">
           <div className="aspect-[16/8] w-full">
-            <Suspense fallback={null}>
-              <GlassesCanvas state={mode} pose={DEMO_POSE} className="h-full w-full" />
-            </Suspense>
+            {IS_MOBILE ? (
+              // Phones: crossfade between still renders of the same glasses
+              <div className="relative h-full w-full overflow-hidden">
+                {Object.entries(STILLS).map(([key, src]) => (
+                  <img
+                    key={key}
+                    src={src}
+                    alt={key === mode ? `Smart glasses, capture light ${key === 'recording' ? 'on' : key === 'idle' ? 'off' : 'covered'}` : ''}
+                    loading="lazy"
+                    className={`absolute left-1/2 top-1/2 w-[125%] max-w-none -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 ${key === mode ? 'opacity-100' : 'opacity-0'}`}
+                  />
+                ))}
+              </div>
+            ) : (
+              <Suspense fallback={null}>
+                <GlassesCanvas state={mode} pose={DEMO_POSE} className="h-full w-full" />
+              </Suspense>
+            )}
           </div>
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-white/40">Core message</p>

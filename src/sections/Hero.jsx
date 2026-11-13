@@ -2,13 +2,15 @@ import { Suspense, lazy, useEffect, useLayoutEffect, useRef, useState } from 're
 import { motion, useReducedMotion, useScroll, useSpring, useTransform } from 'motion/react'
 import { ChevronDown } from 'lucide-react'
 import { team } from '../data/content'
+import { IS_MOBILE } from '../device'
+import glassesStill from '../assets/glasses-recording.webp'
 
 // 3D scene is code-split so the page text paints before three.js loads
 const GlassesCanvas = lazy(() => import('../three/Scene'))
 
 const corner = 'absolute h-8 w-8 border-blue-300/40'
 
-export default function Hero() {
+function DesktopHero() {
   const ref = useRef(null)
   const prevHeight = useRef(0)
   const reduce = useReducedMotion()
@@ -85,4 +87,40 @@ export default function Hero() {
       </div>
     </section>
   )
+}
+
+// Phones: glasses shown as a still image at the top, no 3D or scroll zoom
+function MobileHero() {
+  return (
+    <section id="top" className="relative h-svh overflow-hidden">
+      <div className="pointer-events-none absolute left-1/2 top-[38%] h-[60vmin] w-[90vmin] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#0d2257]/70 blur-[90px]" />
+      <div className="pointer-events-none absolute inset-4" aria-hidden>
+        <span className={`${corner} left-0 top-0 border-l-2 border-t-2`} />
+        <span className={`${corner} right-0 top-0 border-r-2 border-t-2`} />
+        <span className={`${corner} bottom-0 left-0 border-b-2 border-l-2`} />
+        <span className={`${corner} bottom-0 right-0 border-b-2 border-r-2`} />
+        <div className="absolute right-4 top-3 flex items-center gap-2 font-mono text-xs tracking-widest text-white/80">
+          <span className="h-2 w-2 animate-rec rounded-full bg-rec shadow-[0_0_10px_#ff3b3b]" />
+          REC
+        </div>
+      </div>
+      <img
+        src={glassesStill}
+        alt="Starfire Kylie-style smart glasses with the white capture light on"
+        width="1200"
+        height="520"
+        fetchPriority="high"
+        className="absolute left-1/2 top-[38%] w-[125%] max-w-none -translate-x-1/2 -translate-y-1/2"
+      />
+      <div className="absolute inset-x-0 bottom-[12vh] px-4 text-center">
+        <h1 className="text-2xl font-bold tracking-[0.2em] text-white">META GLASSES • R.A.C.E. CAMPAIGN</h1>
+        <p className="mt-4 text-sm text-white/50">{team.join(', ')}</p>
+        <ChevronDown className="mx-auto mt-8 h-6 w-6 animate-bounce text-white/40" aria-hidden />
+      </div>
+    </section>
+  )
+}
+
+export default function Hero() {
+  return IS_MOBILE ? <MobileHero /> : <DesktopHero />
 }
