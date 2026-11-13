@@ -13,10 +13,10 @@
   }
 
   /* HUD corners when the capture light is covered: pulse yellow to red */
-  --animate-warn: warn 1.1s ease-in-out infinite;
+  --animate-warn: warn 0.8s ease-in-out infinite;
   @keyframes warn {
-    0%, 100% { border-color: #facc15; filter: drop-shadow(0 0 6px #facc15aa); }
-    50% { border-color: #ef4444; filter: drop-shadow(0 0 12px #ef4444); }
+    0%, 100% { border-color: #fbbf24; filter: drop-shadow(0 0 8px #f59e0bcc); }
+    50% { border-color: #ff2a2a; filter: drop-shadow(0 0 16px #ff2a2a) drop-shadow(0 0 4px #ff2a2a); }
   }
 }
 

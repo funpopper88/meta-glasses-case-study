@@ -8,7 +8,7 @@ import glassesStill from '../assets/glasses-recording.webp'
 // 3D scene is code-split so the page text paints before three.js loads
 const GlassesCanvas = lazy(() => import('../three/Scene'))
 
-const cornerBase = 'absolute h-8 w-8 transition-colors duration-300'
+const cornerBase = 'absolute h-8 w-8 transition-[transform,border-color] duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]'
 const corner = `${cornerBase} border-blue-300/40`
 
 function DesktopHero() {
@@ -60,7 +60,8 @@ function DesktopHero() {
   }, [])
   useEffect(() => () => clearTimeout(holdTimer.current), [])
 
-  const cornerTone = covered ? 'animate-warn' : 'border-blue-300/40'
+  // Warning: corners grow a little, thicken (via scale) and pulse yellow to red
+  const cornerTone = covered ? 'animate-warn scale-[1.4]' : 'border-blue-300/40'
 
   return (
     <section ref={ref} id="top" className={`relative ${played ? 'h-svh' : 'h-[280vh]'}`}>
@@ -74,10 +75,10 @@ function DesktopHero() {
         </motion.div>
 
         <motion.div style={{ opacity: animate ? hudOpacity : 1 }} className={`pointer-events-none absolute inset-4 transition-[top] duration-500 sm:inset-8 ${played ? 'top-20 sm:top-24' : ''}`} aria-hidden>
-          <span className={`${cornerBase} ${cornerTone} left-0 top-0 border-l-2 border-t-2`} />
-          <span className={`${cornerBase} ${cornerTone} right-0 top-0 border-r-2 border-t-2`} />
-          <span className={`${cornerBase} ${cornerTone} bottom-0 left-0 border-b-2 border-l-2`} />
-          <span className={`${cornerBase} ${cornerTone} bottom-0 right-0 border-b-2 border-r-2`} />
+          <span className={`${cornerBase} ${cornerTone} origin-top-left left-0 top-0 border-l-2 border-t-2`} />
+          <span className={`${cornerBase} ${cornerTone} origin-top-right right-0 top-0 border-r-2 border-t-2`} />
+          <span className={`${cornerBase} ${cornerTone} origin-bottom-left bottom-0 left-0 border-b-2 border-l-2`} />
+          <span className={`${cornerBase} ${cornerTone} origin-bottom-right bottom-0 right-0 border-b-2 border-r-2`} />
           <div className={`absolute right-4 top-3 flex items-center gap-2 font-mono text-xs tracking-widest transition-colors ${covered ? 'text-amber-300' : 'text-white/80'}`}>
             <span className={`h-2 w-2 rounded-full ${covered ? 'bg-white/30' : 'animate-rec bg-rec shadow-[0_0_10px_#ff3b3b]'}`} />
             {covered ? 'LIGHT COVERED' : 'REC'}
