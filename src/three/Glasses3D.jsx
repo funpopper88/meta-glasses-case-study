@@ -253,6 +253,21 @@ export default function Glasses3D({ state = 'recording', ledRef, groupRef, ...pr
         <sprite ref={glow} scale={[0.2, 0.2, 1]} position={[0, 0, 0.01]}>
           <spriteMaterial map={glowTex} transparent depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
         </sprite>
+        {/* damaged light: dark broken pit with cracks spreading from it */}
+        {state === 'damaged' && (
+          <group position={[0, 0, 0.008]}>
+            <mesh rotation={[Math.PI / 2, 0, 0]}>
+              <cylinderGeometry args={[0.03, 0.026, 0.006, 7]} />
+              <meshStandardMaterial color="#050506" roughness={0.9} />
+            </mesh>
+            {[0.3, 1.5, 2.4, 3.6, 4.9].map((a, i) => (
+              <mesh key={i} rotation={[0, 0, a]} position={[Math.cos(a) * 0.048, Math.sin(a) * 0.048, 0.002]}>
+                <boxGeometry args={[0.04 + (i % 2) * 0.02, 0.0035, 0.003]} />
+                <meshStandardMaterial color="#9aa0aa" metalness={0.8} roughness={0.25} />
+              </mesh>
+            ))}
+          </group>
+        )}
         {state === 'covered' && (
           <mesh position={[0, 0, 0.02]} rotation={[0, 0, -0.25]}>
             <boxGeometry args={[0.13, 0.09, 0.025]} />

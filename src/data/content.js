@@ -88,6 +88,8 @@ export const ledStates = {
   idle: { tag: 'LIGHT OFF', tone: 'text-white/50', text: 'No light means the camera is not capturing photos or video.' },
   recording: { tag: 'CAPTURE LIGHT ON', tone: 'text-white', text: 'The white light is on: a photo, video, or livestream is being captured right now.' },
   covered: { tag: 'LIGHT COVERED', tone: 'text-amber-400', text: 'The light is covered, so the glasses block capture until it is uncovered.' },
+  // Meta's mandatory update, July 2026 (follow-up for mid-recording, August 2026)
+  damaged: { tag: 'LIGHT DAMAGED', tone: 'text-red-400', text: "A recent software update shuts the camera off if the light is damaged, drilled out or removed. The glasses can't take photos or video until they're repaired." },
 }
 
 export const alsoTracked = [

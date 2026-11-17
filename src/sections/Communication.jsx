@@ -6,8 +6,9 @@ import { IS_MOBILE } from '../device'
 import stillRecording from '../assets/glasses-recording.webp'
 import stillIdle from '../assets/glasses-idle.webp'
 import stillCovered from '../assets/glasses-covered.webp'
+import stillDamaged from '../assets/glasses-damaged.webp'
 
-const STILLS = { recording: stillRecording, idle: stillIdle, covered: stillCovered }
+const STILLS = { recording: stillRecording, idle: stillIdle, covered: stillCovered, damaged: stillDamaged }
 
 const GlassesCanvas = lazy(() => import('../three/Scene'))
 const DEMO_POSE = { rotY: -0.06, rotX: 0.03, y: 0, minZ: 3.4, fit: 3.3 }
@@ -16,6 +17,7 @@ const modes = [
   ['recording', 'Recording'],
   ['idle', 'Not recording'],
   ['covered', 'Light covered'],
+  ['damaged', 'Light damaged'],
 ]
 
 export default function Communication() {
@@ -51,7 +53,7 @@ export default function Communication() {
                   <img
                     key={key}
                     src={src}
-                    alt={key === mode ? `Smart glasses, capture light ${key === 'recording' ? 'on' : key === 'idle' ? 'off' : 'covered'}` : ''}
+                    alt={key === mode ? `Smart glasses, capture light ${key === 'recording' ? 'on' : key === 'idle' ? 'off' : key}` : ''}
                     loading="lazy"
                     className={`absolute left-1/2 top-1/2 w-[125%] max-w-none -translate-x-1/2 -translate-y-1/2 transition-opacity duration-300 ${key === mode ? 'opacity-100' : 'opacity-0'}`}
                   />
