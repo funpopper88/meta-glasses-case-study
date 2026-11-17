@@ -2,13 +2,18 @@ import Section from '../components/Section'
 import Reveal from '../components/Reveal'
 import { keyStats, research } from '../data/content'
 
-function StateCard({ title, items, accent, tone }) {
+function StateCard({ title, items, accent, tone, dot }) {
   return (
     <div className="card h-full p-7">
       <span className={`block h-1 w-12 rounded-full ${accent}`} />
       <h3 className={`mt-4 text-2xl font-semibold tracking-tight ${tone}`}>{title}</h3>
       <ul className="mt-5 space-y-3">
-        {items.map((t) => <li key={t} className="leading-relaxed text-white/70">{t}</li>)}
+        {items.map((t) => (
+          <li key={t} className="flex gap-3 leading-relaxed text-white/70">
+            <span className={`mt-[0.6em] h-1.5 w-1.5 shrink-0 rounded-full ${dot}`} aria-hidden />
+            {t}
+          </li>
+        ))}
       </ul>
     </div>
   )
@@ -27,8 +32,8 @@ export default function Research() {
         ))}
       </div>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
-        <Reveal><StateCard title="Real state" items={research.current} accent="bg-slate-400/50" tone="text-slate-200" /></Reveal>
-        <Reveal delay={0.1}><StateCard title="Ideal state" items={research.ideal} accent="bg-gradient-to-r from-blue-500 to-sky-300" tone="text-blue-100" /></Reveal>
+        <Reveal><StateCard title="Real state" items={research.current} accent="bg-slate-400/50" tone="text-slate-200" dot="bg-slate-400" /></Reveal>
+        <Reveal delay={0.1}><StateCard title="Ideal state" items={research.ideal} accent="bg-gradient-to-r from-blue-500 to-sky-300" tone="text-blue-100" dot="bg-sky-400" /></Reveal>
       </div>
     </Section>
   )

@@ -15,16 +15,16 @@ export const research = {
   intro:
     "People aren't rejecting Meta glasses for their design or quality. They don't trust Meta, or the person wearing them, with their privacy. Because the core problem is trust, it calls for public relations, not advertising.",
   current: [
-    'Meta leads the category with 73% of global smart glasses sales in the first half of 2025.',
-    'The glasses have been labeled "pervert glasses," and creators have lost followers for wearing them.',
-    'Venues across the UK, including pub chain Wetherspoons, are banning them.',
-    'Lawsuits allege that reviewers saw sensitive footage captured by the glasses.',
+    'Meta leads the category, with 73% of global smart glasses sales in the first half of 2025.',
+    'Some online conversation has given smart glasses a negative nickname, and a few creators have seen pushback from their audiences.',
+    'Some UK venues, including pub chain Wetherspoons, have introduced policies limiting smart glasses.',
+    'Recent lawsuits have raised questions about how captured footage is reviewed and handled.',
   ],
   ideal: [
-    'People who see smart glasses trust Meta to protect their information and their rights.',
-    'Bystanders know when recording is happening and that it is consented.',
-    'The negative label fades and venue bans lift.',
-    'Smart glasses become as common as the smartphone.',
+    'People who see smart glasses feel confident that Meta protects their information and privacy.',
+    'Bystanders can easily tell when recording is happening, and recording happens with consent.',
+    'Positive conversation replaces negative nicknames, and venues welcome smart glasses.',
+    'Smart glasses become as everyday and accepted as the smartphone.',
   ],
 }
 
@@ -53,7 +53,7 @@ export const objectives = [
     label: 'Objective 2',
     from: 35,
     to: 40,
-    text: 'Increase the share of smart glasses purchased by women ages 18 to 30 to 40% by October 2028.',
+    text: 'Increase the share of smart glasses purchased by women ages 18 to 30 from 35% to 40% by October 2028.',
     note: 'Reference point: 35% of smart glasses considerers are women, according to YouGov, June 30, 2025.',
     short: 'Share of smart glasses purchased by women ages 18 to 30',
     measure: 'Purchase data divided by gender and age.',
