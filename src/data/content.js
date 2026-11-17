@@ -54,7 +54,7 @@ export const objectives = [
     from: 35,
     to: 40,
     text: 'Increase the share of smart glasses purchased by women ages 18 to 30 from 35% to 40% by October 2028.',
-    note: 'Reference point: 35% of smart glasses considerers are women, according to YouGov, June 30, 2025.',
+    note: 'Reference point: 35% of smart glasses wearers are women, according to YouGov, June 30, 2025.',
     short: 'Share of smart glasses purchased by women ages 18 to 30',
     measure: 'Purchase data divided by gender and age.',
   },
