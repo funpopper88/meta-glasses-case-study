@@ -24,7 +24,6 @@ function Column({ value, color, label }) {
 }
 
 const groups = [
-  { title: 'Measured by', rows: objectives.map((o) => [o.label, o.measure]) },
   { title: 'Also tracked', rows: alsoTracked.map((m) => [m.title, m.body]) },
 ]
 
@@ -61,6 +60,10 @@ export default function Evaluation() {
             <div key={o.label} className="max-w-[16rem] text-center">
               <p className="text-sm font-semibold text-white/85">{o.label}</p>
               <p className="mt-0.5 text-xs leading-relaxed text-white/50">{o.short}</p>
+              <p className="mt-3 border-t border-white/10 pt-3 text-xs leading-relaxed text-white/65">
+                <span className="font-semibold text-blue-200/90">Measured by: </span>
+                {o.measure}
+              </p>
             </div>
           ))}
         </div>
