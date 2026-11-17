@@ -161,100 +161,100 @@ function OnFront({ x, y, lift = 0.004, children, groupRef }) {
   )
 }
 
-// Smashed capture-light cover, painted as a detailed texture: a punched-in
-// hole, broken glass cells with their own reflections, cut-glass edges,
-// hairline fractures and a few glints. Mapped onto a glossy disc.
+// Smashed capture-light cover, painted as a texture: one dark piece of glass
+// with a frosted crush point, jagged fracture lines, chips and scratches.
+function seeded(seed) {
+  return () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+}
+
+// jagged crack: a random walk that drifts along a heading
+function crack(g, rnd, x, y, ang, len, width, alpha, depth = 0) {
+  g.beginPath(); g.moveTo(x, y)
+  let travelled = 0
+  while (travelled < len) {
+    const step = 10 + rnd() * 16
+    ang += (rnd() - 0.5) * 0.16 + (rnd() < 0.15 ? (rnd() - 0.5) * 0.9 : 0) // straight runs, sharp kinks
+    x += Math.cos(ang) * step; y += Math.sin(ang) * step
+    travelled += step
+    g.lineTo(x, y)
+    if (depth < 2 && rnd() < 0.12) {
+      g.strokeStyle = `rgba(235,242,255,${alpha})`; g.lineWidth = width; g.stroke()
+      crack(g, rnd, x, y, ang + (rnd() < 0.5 ? 1 : -1) * (0.5 + rnd() * 0.6), (len - travelled) * (0.4 + rnd() * 0.4), width * 0.6, alpha * 0.8, depth + 1)
+      g.beginPath(); g.moveTo(x, y)
+    }
+  }
+  g.strokeStyle = `rgba(235,242,255,${alpha})`; g.lineWidth = width; g.stroke()
+}
+
+function scratches(g, rnd, cx, cy, R, count, maxAlpha) {
+  g.lineCap = 'round'
+  for (let k = 0; k < count; k++) {
+    const a = rnd() * Math.PI * 2, r = Math.sqrt(rnd()) * R
+    const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r
+    const dir = rnd() < 0.6 ? 0.5 + (rnd() - 0.5) * 0.5 : rnd() * Math.PI // mostly one swipe direction
+    const len = 15 + rnd() * 70
+    g.beginPath(); g.moveTo(x, y)
+    g.quadraticCurveTo(x + Math.cos(dir) * len * 0.5 + (rnd() - 0.5) * 6, y + Math.sin(dir) * len * 0.5 + (rnd() - 0.5) * 6, x + Math.cos(dir) * len, y + Math.sin(dir) * len)
+    g.strokeStyle = `rgba(225,232,245,${0.05 + rnd() * maxAlpha})`; g.lineWidth = 0.5 + rnd() * 0.9; g.stroke()
+  }
+}
+
 function makeSmashTexture() {
   const S = 512, C = S / 2, R = S * 0.48
-  const IX = C + 26, IY = C - 20 // impact point, off-center
-  let seed = 11
-  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+  const IX = C + 34, IY = C - 26 // impact point, off-center
+  const rnd = seeded(23)
   const cv = document.createElement('canvas')
   cv.width = cv.height = S
   const g = cv.getContext('2d')
-  const P = (a, r) => [IX + Math.cos(a) * r, IY + Math.sin(a) * r]
 
-  // rays from the impact point, and the fracture rings they cross
-  const n = 10
-  const rays = []
-  for (let i = 0; i < n; i++) rays.push((i / n) * Math.PI * 2 + (rnd() - 0.5) * 0.5)
-  const hole = rays.map(() => R * (0.24 + rnd() * 0.16))
-  const mid = rays.map(() => R * (0.52 + rnd() * 0.3))
-  const jag = (p, q, amt) => {
-    const m = [(p[0] + q[0]) / 2 + (rnd() - 0.5) * amt, (p[1] + q[1]) / 2 + (rnd() - 0.5) * amt]
-    return [p, m, q]
+  // one continuous piece of dark glass with a single soft reflection
+  g.beginPath(); g.arc(C, C, R, 0, Math.PI * 2); g.fillStyle = '#090d14'; g.fill()
+  const sheen = g.createLinearGradient(0, 0, S, S)
+  sheen.addColorStop(0.15, 'rgba(120,140,170,0)')
+  sheen.addColorStop(0.32, 'rgba(120,140,170,0.22)')
+  sheen.addColorStop(0.45, 'rgba(120,140,170,0)')
+  g.fillStyle = sheen; g.fillRect(0, 0, S, S)
+
+  // fine scratches all over the surface
+  scratches(g, rnd, C, C, R, 90, 0.22)
+
+  // frosted crush where it was hit: powdered glass
+  const crushR = R * 0.36
+  for (let k = 0; k < 4500; k++) {
+    const a = rnd() * Math.PI * 2, r = crushR * Math.pow(rnd(), 0.7) * (0.75 + 0.35 * Math.sin(a * 5 + 1))
+    g.fillStyle = `rgba(230,236,248,${0.12 + rnd() * 0.5})`
+    g.fillRect(IX + Math.cos(a) * r, IY + Math.sin(a) * r, 1 + rnd() * 2, 1 + rnd() * 2)
+  }
+  // missing chunk at the center of the impact, with a broken bright lip
+  g.beginPath()
+  for (let k = 0; k < 11; k++) {
+    const a = (k / 11) * Math.PI * 2, r = crushR * (0.22 + rnd() * 0.22)
+    const x = IX + Math.cos(a) * r, y = IY + Math.sin(a) * r
+    k ? g.lineTo(x, y) : g.moveTo(x, y)
+  }
+  g.closePath(); g.fillStyle = '#000'; g.fill()
+  g.strokeStyle = 'rgba(240,245,255,0.75)'; g.lineWidth = 1.5; g.stroke()
+
+  // main fracture lines running out from the impact, uneven in length
+  for (let k = 0; k < 9; k++) {
+    const a = (k / 9) * Math.PI * 2 + (rnd() - 0.5) * 0.6
+    crack(g, rnd, IX + Math.cos(a) * crushR * 0.5, IY + Math.sin(a) * crushR * 0.5, a, R * (0.6 + rnd() * 0.9), 1.3 + rnd() * 1, 0.7 + rnd() * 0.3)
+  }
+  // a few broken stress fractures crossing them, not full rings
+  for (let k = 0; k < 4; k++) {
+    const a = rnd() * Math.PI * 2, r = R * (0.45 + rnd() * 0.35)
+    crack(g, rnd, IX + Math.cos(a) * r, IY + Math.sin(a) * r, a + Math.PI / 2, R * (0.2 + rnd() * 0.25), 1.1, 0.45)
   }
 
-  // base: dark tinted glass
-  g.beginPath(); g.arc(C, C, R, 0, Math.PI * 2)
-  g.fillStyle = '#0b1018'; g.fill()
-
-  const cells = []
-  for (let i = 0; i < n; i++) {
-    const j = (i + 1) % n
-    const a0 = rays[i], a1 = rays[j] + (j === 0 ? Math.PI * 2 : 0)
-    // inner ring cell (some are knocked out entirely)
-    if (rnd() > 0.4) {
-      cells.push({ pts: [...jag(P(a0, hole[i]), P(a0, mid[i]), 14), ...jag(P(a1, mid[j]), P(a1, hole[j]), 14).slice(1)], depth: 1 })
-    }
-    // outer cell, sometimes split by an extra short crack
-    const am = (a0 + a1) / 2
-    if (rnd() > 0.5) {
-      const rm = (mid[i] + mid[j]) / 2
-      cells.push({ pts: [P(a0, mid[i]), P(a0, R * 1.3), P(am, R * 1.3), P(am, rm)], depth: 0 })
-      cells.push({ pts: [P(am, rm), P(am, R * 1.3), P(a1, R * 1.3), P(a1, mid[j])], depth: 0 })
-    } else {
-      cells.push({ pts: [...jag(P(a0, mid[i]), P(a0, R * 1.3), 10), P(am, R * 1.3), ...jag(P(a1, R * 1.3), P(a1, mid[j]), 10).slice(1)], depth: 0 })
-    }
-  }
-
-  const poly = (pts) => { g.beginPath(); g.moveTo(...pts[0]); for (const p of pts.slice(1)) g.lineTo(...p); g.closePath() }
-
-  for (const c of cells) {
-    // each piece sits at its own angle, so it reflects a different brightness
-    const lit = rnd() ** 1.6 * (c.depth ? 0.7 : 1)
-    const ang = rnd() * Math.PI * 2
-    const [x0, y0] = c.pts[0]
-    const gr = g.createLinearGradient(x0, y0, x0 + Math.cos(ang) * 160, y0 + Math.sin(ang) * 160)
-    const hi = Math.round(40 + lit * 190), lo = Math.round(14 + lit * 60)
-    gr.addColorStop(0, `rgba(${hi - 12},${hi - 4},${hi + 14},0.95)`)
-    gr.addColorStop(1, `rgba(${lo},${lo + 6},${lo + 18},0.95)`)
-    poly(c.pts); g.fillStyle = gr; g.fill()
-    // cut-glass edge: dark seam, then a thin bright bevel just inside it
-    g.lineJoin = 'round'
-    poly(c.pts); g.strokeStyle = 'rgba(0,0,0,0.85)'; g.lineWidth = 5; g.stroke()
-    g.save(); g.translate(-1.2, -1.2)
-    poly(c.pts); g.strokeStyle = `rgba(225,236,255,${0.35 + lit * 0.6})`; g.lineWidth = 1.6; g.stroke()
-    g.restore()
-  }
-
-  // the punched-in hole, with a jagged lip
-  const holePts = []
-  rays.forEach((a, i) => { holePts.push(P(a, hole[i])); holePts.push(P(a + 0.24, hole[i] * (0.75 + rnd() * 0.2))) })
-  poly(holePts); g.fillStyle = '#000'; g.fill()
-  g.save(); g.translate(1.5, 1.5); poly(holePts); g.strokeStyle = 'rgba(200,215,240,0.55)'; g.lineWidth = 2; g.stroke(); g.restore()
-  // broken LED chip down inside the hole
-  g.save(); g.translate(IX + 4, IY + 6); g.rotate(0.5)
-  g.fillStyle = '#20232a'; g.fillRect(-14, -14, 28, 28)
-  g.fillStyle = '#3a3e47'; g.fillRect(-14, -14, 28, 4)
-  g.restore()
-
-  // hairline fractures running through the pieces
-  g.lineCap = 'round'
-  for (let k = 0; k < 26; k++) {
-    let a = rnd() * Math.PI * 2, r = R * (0.3 + rnd() * 0.6)
-    let [x, y] = P(a, r)
-    g.beginPath(); g.moveTo(x, y)
-    for (let s = 0; s < 3; s++) { a += (rnd() - 0.5) * 0.6; r += 10 + rnd() * 22; [x, y] = P(a, Math.min(r, R * 1.3)); g.lineTo(x, y) }
-    g.strokeStyle = `rgba(220,232,255,${0.15 + rnd() * 0.3})`; g.lineWidth = 0.8; g.stroke()
-  }
-
-  // a few sharp glints where light catches a broken edge
-  for (let k = 0; k < 6; k++) {
-    const c = cells[Math.floor(rnd() * cells.length)].pts[0]
-    const gl = g.createRadialGradient(c[0], c[1], 0, c[0], c[1], 16)
-    gl.addColorStop(0, 'rgba(255,255,255,0.95)'); gl.addColorStop(1, 'rgba(255,255,255,0)')
-    g.fillStyle = gl; g.fillRect(c[0] - 16, c[1] - 16, 32, 32)
+  // chips knocked out of the edge
+  for (let k = 0; k < 3; k++) {
+    const a = rnd() * Math.PI * 2
+    g.beginPath()
+    g.moveTo(C + Math.cos(a - 0.12) * R * 1.02, C + Math.sin(a - 0.12) * R * 1.02)
+    g.lineTo(C + Math.cos(a) * R * (0.8 - rnd() * 0.08), C + Math.sin(a) * R * (0.8 - rnd() * 0.08))
+    g.lineTo(C + Math.cos(a + 0.1) * R * 1.02, C + Math.sin(a + 0.1) * R * 1.02)
+    g.closePath(); g.fillStyle = '#000'; g.fill()
+    g.strokeStyle = 'rgba(230,238,250,0.6)'; g.lineWidth = 1; g.stroke()
   }
 
   // keep everything inside the round cover
@@ -268,18 +268,42 @@ function makeSmashTexture() {
   return tex
 }
 
+// scuffs on the frame around the broken light
+function makeScuffTexture() {
+  const S = 512, C = S / 2
+  const rnd = seeded(5)
+  const cv = document.createElement('canvas')
+  cv.width = cv.height = S
+  const g = cv.getContext('2d')
+  scratches(g, rnd, C, C, S * 0.42, 70, 0.3)
+  // fade out toward the edge so it blends into the frame
+  g.globalCompositeOperation = 'destination-in'
+  const fade = g.createRadialGradient(C, C, S * 0.12, C, C, S * 0.5)
+  fade.addColorStop(0, '#000'); fade.addColorStop(1, 'rgba(0,0,0,0)')
+  g.fillStyle = fade; g.fillRect(0, 0, S, S)
+  const tex = new THREE.CanvasTexture(cv)
+  tex.colorSpace = THREE.SRGBColorSpace
+  return tex
+}
+
 function SmashedCover() {
   const tex = useMemo(makeSmashTexture, [])
+  const scuff = useMemo(makeScuffTexture, [])
   return (
     <group position={[0, 0, 0.009]}>
+      {/* scuffed frame around the light */}
+      <mesh position={[0, 0, -0.004]}>
+        <circleGeometry args={[0.16, 48]} />
+        <meshBasicMaterial map={scuff} transparent depthWrite={false} />
+      </mesh>
       {/* metal bezel the glass sat in */}
       <mesh>
         <torusGeometry args={[0.078, 0.007, 12, 48]} />
-        <meshStandardMaterial color="#9da3ad" metalness={1} roughness={0.25} />
+        <meshStandardMaterial color="#8d939d" metalness={1} roughness={0.45} />
       </mesh>
       <mesh>
         <circleGeometry args={[0.078, 48]} />
-        <meshPhysicalMaterial map={tex} emissiveMap={tex} emissive="#ffffff" emissiveIntensity={0.55} transparent roughness={0.08} metalness={0.2} clearcoat={1} clearcoatRoughness={0} envMapIntensity={1.4} />
+        <meshPhysicalMaterial map={tex} emissiveMap={tex} emissive="#ffffff" emissiveIntensity={0.3} transparent roughness={0.12} metalness={0.1} clearcoat={1} clearcoatRoughness={0.05} envMapIntensity={1.2} />
       </mesh>
     </group>
   )
