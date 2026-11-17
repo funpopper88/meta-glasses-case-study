@@ -67,7 +67,7 @@ export default function Communication() {
           </div>
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-white/40">Core message</p>
-            <p className="mt-2 text-lg text-white/80">Every channel teaches people how to tell when glasses are recording.</p>
+            <p className="mt-2 text-lg text-white/80">Every channel of communication teaches people how to tell when glasses are recording.</p>
             <div className="mt-6 flex flex-wrap gap-2" role="radiogroup" aria-label="Glasses state">
               {modes.map(([key, label]) => (
                 <button
