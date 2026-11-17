@@ -82,7 +82,7 @@ export default function Evaluation() {
         </div>
 
         {/* how each thing is measured: no repeat of the chart's names or numbers */}
-        <div className="mt-12 space-y-8">
+        <div className="mt-6 space-y-8">
           {groups.map((grp) => (
             <div key={grp.title}>
               <p className="border-b border-white/10 pb-2 font-mono text-[11px] uppercase tracking-widest text-white/40">{grp.title}</p>
