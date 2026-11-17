@@ -161,6 +161,10 @@ function OnFront({ x, y, lift = 0.004, children, groupRef }) {
   )
 }
 
+// Damaged-light cracks: [angle, length, branch side]
+const CRACKS = [[0.25, 0.06, 0], [1.35, 0.1, 1], [2.25, 0.1, -1], [3.25, 0.085, 1], [4.35, 0.1, -1], [5.5, 0.065, 0]]
+const crackMat = <meshStandardMaterial color="#dfe3ea" emissive="#9aa1ad" emissiveIntensity={0.7} metalness={0.5} roughness={0.25} />
+
 export default function Glasses3D({ state = 'recording', ledRef, groupRef, ...props }) {
   const recording = state === 'recording'
   const { front, lenses, rings, temple } = useGeometries()
@@ -253,19 +257,35 @@ export default function Glasses3D({ state = 'recording', ledRef, groupRef, ...pr
         <sprite ref={glow} scale={[0.2, 0.2, 1]} position={[0, 0, 0.01]}>
           <spriteMaterial map={glowTex} transparent depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
         </sprite>
-        {/* damaged light: dark broken pit with cracks spreading from it */}
+        {/* damaged light: shattered pit with bright cracks spreading across the frame */}
         {state === 'damaged' && (
           <group position={[0, 0, 0.008]}>
             <mesh rotation={[Math.PI / 2, 0, 0]}>
-              <cylinderGeometry args={[0.03, 0.026, 0.006, 7]} />
-              <meshStandardMaterial color="#050506" roughness={0.9} />
+              <cylinderGeometry args={[0.05, 0.042, 0.008, 7]} />
+              <meshStandardMaterial color="#020203" roughness={1} />
             </mesh>
-            {[0.3, 1.5, 2.4, 3.6, 4.9].map((a, i) => (
-              <mesh key={i} rotation={[0, 0, a]} position={[Math.cos(a) * 0.048, Math.sin(a) * 0.048, 0.002]}>
-                <boxGeometry args={[0.04 + (i % 2) * 0.02, 0.0035, 0.003]} />
-                <meshStandardMaterial color="#9aa0aa" metalness={0.8} roughness={0.25} />
-              </mesh>
-            ))}
+            {/* jagged rim of broken plastic */}
+            <mesh rotation={[0, 0, 0.2]}>
+              <torusGeometry args={[0.05, 0.006, 4, 9]} />
+              <meshStandardMaterial color="#c9ced8" emissive="#8a909c" emissiveIntensity={0.5} metalness={0.6} roughness={0.3} />
+            </mesh>
+            {CRACKS.map(([ang, len, branch], i) => {
+              const r0 = 0.05
+              return (
+                <group key={i} rotation={[0, 0, ang]}>
+                  <mesh position={[r0 + len / 2, 0, 0.003]}>
+                    <boxGeometry args={[len, 0.006, 0.004]} />
+                    {crackMat}
+                  </mesh>
+                  {branch && (
+                    <mesh position={[r0 + len * 0.6 + 0.025, 0.015 * branch, 0.003]} rotation={[0, 0, 0.6 * branch]}>
+                      <boxGeometry args={[0.05, 0.0045, 0.004]} />
+                      {crackMat}
+                    </mesh>
+                  )}
+                </group>
+              )
+            })}
           </group>
         )}
         {state === 'covered' && (
