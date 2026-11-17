@@ -44,7 +44,7 @@ export const objectives = [
     label: 'Objective 1',
     from: 3,
     to: 20,
-    text: 'Grow trust in Meta’s data protection among users ages 18 to 40 from 3% to 20% by October 2028.',
+    text: 'Increase trust in Meta’s data protection among users ages 18 to 40 from 3% to 20% by October 2028.',
     note: 'Baseline: 3% of smart glasses users strongly trust their device, according to Security.org, Aug. 13, 2026.',
     short: 'Users ages 18 to 40 who strongly trust Meta with their data',
     measure: 'A repeatable trust survey of Meta glasses users, run at launch, midpoint and finish.',
