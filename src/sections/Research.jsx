@@ -21,7 +21,7 @@ function StateCard({ title, items, accent, tone, dot }) {
 
 export default function Research() {
   return (
-    <Section id="research" index="R" eyebrow="Research" title="The situation" intro={research.intro}>
+    <Section id="research" index="R" eyebrow="Research" title="The situation" intro={research.intro} wide>
       <div className="grid gap-4 md:grid-cols-3">
         {keyStats.map((s, i) => (
           <Reveal key={s.label} delay={i * 0.06} className="card flex flex-col p-8">

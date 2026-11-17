@@ -1,6 +1,6 @@
 import { motion } from 'motion/react'
 
-export default function Section({ id, index, eyebrow, title, intro, children }) {
+export default function Section({ id, index, eyebrow, title, intro, wide = false, children }) {
   return (
     <section id={id} className="relative scroll-mt-16 py-15 sm:py-21">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
@@ -9,7 +9,7 @@ export default function Section({ id, index, eyebrow, title, intro, children }) 
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.6, ease: 'easeOut' }}
-          className="mb-10 max-w-3xl"
+          className={`mb-10 ${wide ? '' : 'max-w-3xl'}`}
         >
           <p className="mb-4 font-mono text-xs uppercase tracking-[0.25em] text-blue-300/80">
             <span className="text-white/30">{index} /</span> {eyebrow}
