@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 
 export default function Section({ id, index, eyebrow, title, intro, children }) {
   return (
-    <section id={id} className="relative scroll-mt-16 py-20 sm:py-28">
+    <section id={id} className="relative scroll-mt-16 py-15 sm:py-21">
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
         <motion.header
           initial={{ opacity: 0, y: 24 }}
