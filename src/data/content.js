@@ -13,7 +13,7 @@ export const nav = [
 
 export const research = {
   intro:
-    "People aren't rejecting Meta glasses for their design or quality. They don't trust Meta, or the person wearing them, with their privacy. Because the core problem is trust, it calls for public relations. The campaign is partly reactive, responding to concerns already raised about recording and data, and partly proactive, showing people how the privacy features work before smart glasses become an everyday sight.",
+    "People aren't rejecting Meta glasses for their design or quality. Rather, they don't trust Meta, or the person wearing them, with their privacy. The campaign is partly reactive, responding to concerns already raised about recording and data, and partly proactive, showing people how the privacy features work before smart glasses become an everyday sight.",
   current: [
     'Meta leads the category, with 73% of global smart glasses sales in the first half of 2025.',
     'Some online conversation has given smart glasses a negative nickname, and a few creators have seen pushback from their audiences.',
