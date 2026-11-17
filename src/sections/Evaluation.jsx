@@ -23,6 +23,11 @@ function Column({ value, color, label }) {
   )
 }
 
+const groups = [
+  { title: 'Measured by', rows: objectives.map((o) => [o.label, o.measure]) },
+  { title: 'Also tracked', rows: alsoTracked.map((m) => [m.title, m.body]) },
+]
+
 export default function Evaluation() {
   return (
     <Section id="evaluation" index="E" eyebrow="Evaluation" title="How we'll measure success" intro="Where each objective stands today, and where it needs to be by October 2028.">
@@ -56,10 +61,6 @@ export default function Evaluation() {
             <div key={o.label} className="max-w-[16rem] text-center">
               <p className="text-sm font-semibold text-white/85">{o.label}</p>
               <p className="mt-0.5 text-xs leading-relaxed text-white/50">{o.short}</p>
-              <p className="mt-3 text-xs leading-relaxed text-white/60">
-                <span className="mb-1 block font-mono text-[10px] uppercase tracking-widest text-white/40">Measured by</span>
-                {o.measure}
-              </p>
             </div>
           ))}
         </div>
@@ -77,16 +78,21 @@ export default function Evaluation() {
           </table>
         </div>
 
-        <div className="mt-10 border-t border-white/10 pt-6">
-          <p className="font-mono text-xs uppercase tracking-widest text-white/40">Also tracked</p>
-          <dl className="mt-3 grid gap-x-8 gap-y-2 text-sm md:grid-cols-2">
-            {alsoTracked.map((m) => (
-              <div key={m.title}>
-                <dt className="inline font-semibold text-white/85">{m.title}: </dt>
-                <dd className="inline text-white/55">{m.body}</dd>
-              </div>
-            ))}
-          </dl>
+        {/* how each thing is measured: no repeat of the chart's names or numbers */}
+        <div className="mt-12 space-y-8">
+          {groups.map((grp) => (
+            <div key={grp.title}>
+              <p className="border-b border-white/10 pb-2 font-mono text-[11px] uppercase tracking-widest text-white/40">{grp.title}</p>
+              <dl>
+                {grp.rows.map(([label, body]) => (
+                  <div key={label} className="grid gap-1 border-b border-white/[0.06] py-3.5 last:border-0 sm:grid-cols-[9rem_1fr] sm:gap-6">
+                    <dt className="text-sm font-semibold text-white/85">{label}</dt>
+                    <dd className="text-sm leading-relaxed text-white/60">{body}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          ))}
         </div>
       </Reveal>
     </Section>
