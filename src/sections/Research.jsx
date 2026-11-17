@@ -27,7 +27,7 @@ export default function Research() {
         ))}
       </div>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
-        <Reveal><StateCard title="Current state" items={research.current} accent="bg-slate-400/50" tone="text-slate-200" /></Reveal>
+        <Reveal><StateCard title="Real state" items={research.current} accent="bg-slate-400/50" tone="text-slate-200" /></Reveal>
         <Reveal delay={0.1}><StateCard title="Ideal state" items={research.ideal} accent="bg-gradient-to-r from-blue-500 to-sky-300" tone="text-blue-100" /></Reveal>
       </div>
     </Section>
