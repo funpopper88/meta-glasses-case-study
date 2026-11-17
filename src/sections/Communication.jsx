@@ -22,7 +22,6 @@ const modes = [
 
 export default function Communication() {
   const [mode, setMode] = useState('recording')
-  const s = ledStates[mode]
 
   return (
     <Section id="communication" index="C" eyebrow="Communication" title="Audiences and approach" intro={strategy}>
@@ -83,15 +82,21 @@ export default function Communication() {
                 </button>
               ))}
             </div>
-            <p className="mt-4 text-sm text-white/60" aria-live="polite">
-              <span className={`font-mono font-semibold ${s.tone}`}>● {s.tag}</span>
-              <span className="mt-1 block">{s.text}</span>
-              {s.source && (
-                <a href={s.sourceUrl} target="_blank" rel="noreferrer" className="mt-3 block font-mono text-[10px] uppercase tracking-widest text-white/35 transition-colors hover:text-blue-300">
-                  Source: {s.source}
-                </a>
-              )}
-            </p>
+            {/* every state's blurb sits in the same grid cell, so the box is always
+                sized to the longest one and doesn't jump when toggling */}
+            <div className="mt-4 grid text-sm text-white/60" aria-live="polite">
+              {Object.entries(ledStates).map(([key, st]) => (
+                <p key={key} className={`[grid-area:1/1] ${key === mode ? '' : 'invisible'}`} aria-hidden={key !== mode}>
+                  <span className={`font-mono font-semibold ${st.tone}`}>● {st.tag}</span>
+                  <span className="mt-1 block">{st.text}</span>
+                  {st.source && (
+                    <a href={st.sourceUrl} target="_blank" rel="noreferrer" tabIndex={key === mode ? 0 : -1} className="mt-3 block font-mono text-[10px] uppercase tracking-widest text-white/35 transition-colors hover:text-blue-300">
+                      Source: {st.source}
+                    </a>
+                  )}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
       </Reveal>
