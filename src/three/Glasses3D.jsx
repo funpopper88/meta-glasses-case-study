@@ -161,35 +161,129 @@ function OnFront({ x, y, lift = 0.004, children, groupRef }) {
   )
 }
 
-// Smashed capture-light cover: wedge-shaped glass shards around a hole,
-// each pushed in and twisted so they catch the light at different angles
-function makeShards() {
-  let seed = 7
+// Smashed capture-light cover, painted as a detailed texture: a punched-in
+// hole, broken glass cells with their own reflections, cut-glass edges,
+// hairline fractures and a few glints. Mapped onto a glossy disc.
+function makeSmashTexture() {
+  const S = 512, C = S / 2, R = S * 0.48
+  const IX = C + 26, IY = C - 20 // impact point, off-center
+  let seed = 11
   const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
-  const n = 9
-  const out = []
-  let a = 0
-  for (let i = 0; i < n; i++) {
-    const span = ((Math.PI * 2) / n) * (0.7 + rnd() * 0.6)
-    const rIn = 0.008 + rnd() * 0.012
-    const rOut = 0.044 + rnd() * 0.012
-    const half = span / 2 - (0.02 + rnd() * 0.07) // uneven gaps between shards
-    const shape = new THREE.Shape()
-    shape.moveTo(rIn, (rnd() - 0.5) * 0.006)
-    shape.lineTo(Math.cos(-half) * rOut, Math.sin(-half) * rOut)
-    shape.lineTo(rOut * (1.02 + rnd() * 0.06), (rnd() - 0.5) * 0.01)
-    shape.lineTo(Math.cos(half) * rOut, Math.sin(half) * rOut)
-    shape.closePath()
-    const geo = new THREE.ExtrudeGeometry(shape, { depth: 0.003, bevelEnabled: false })
-    out.push({ geo, edges: new THREE.EdgesGeometry(geo), ang: a + span / 2, rOut, tilt: -(0.12 + rnd() * 0.3), twist: (rnd() - 0.5) * 1.4 })
-    a += span
+  const cv = document.createElement('canvas')
+  cv.width = cv.height = S
+  const g = cv.getContext('2d')
+  const P = (a, r) => [IX + Math.cos(a) * r, IY + Math.sin(a) * r]
+
+  // rays from the impact point, and the fracture rings they cross
+  const n = 10
+  const rays = []
+  for (let i = 0; i < n; i++) rays.push((i / n) * Math.PI * 2 + (rnd() - 0.5) * 0.5)
+  const hole = rays.map(() => R * (0.24 + rnd() * 0.16))
+  const mid = rays.map(() => R * (0.52 + rnd() * 0.3))
+  const jag = (p, q, amt) => {
+    const m = [(p[0] + q[0]) / 2 + (rnd() - 0.5) * amt, (p[1] + q[1]) / 2 + (rnd() - 0.5) * amt]
+    return [p, m, q]
   }
-  return out
+
+  // base: dark tinted glass
+  g.beginPath(); g.arc(C, C, R, 0, Math.PI * 2)
+  g.fillStyle = '#0b1018'; g.fill()
+
+  const cells = []
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n
+    const a0 = rays[i], a1 = rays[j] + (j === 0 ? Math.PI * 2 : 0)
+    // inner ring cell (some are knocked out entirely)
+    if (rnd() > 0.4) {
+      cells.push({ pts: [...jag(P(a0, hole[i]), P(a0, mid[i]), 14), ...jag(P(a1, mid[j]), P(a1, hole[j]), 14).slice(1)], depth: 1 })
+    }
+    // outer cell, sometimes split by an extra short crack
+    const am = (a0 + a1) / 2
+    if (rnd() > 0.5) {
+      const rm = (mid[i] + mid[j]) / 2
+      cells.push({ pts: [P(a0, mid[i]), P(a0, R * 1.3), P(am, R * 1.3), P(am, rm)], depth: 0 })
+      cells.push({ pts: [P(am, rm), P(am, R * 1.3), P(a1, R * 1.3), P(a1, mid[j])], depth: 0 })
+    } else {
+      cells.push({ pts: [...jag(P(a0, mid[i]), P(a0, R * 1.3), 10), P(am, R * 1.3), ...jag(P(a1, R * 1.3), P(a1, mid[j]), 10).slice(1)], depth: 0 })
+    }
+  }
+
+  const poly = (pts) => { g.beginPath(); g.moveTo(...pts[0]); for (const p of pts.slice(1)) g.lineTo(...p); g.closePath() }
+
+  for (const c of cells) {
+    // each piece sits at its own angle, so it reflects a different brightness
+    const lit = rnd() ** 1.6 * (c.depth ? 0.7 : 1)
+    const ang = rnd() * Math.PI * 2
+    const [x0, y0] = c.pts[0]
+    const gr = g.createLinearGradient(x0, y0, x0 + Math.cos(ang) * 160, y0 + Math.sin(ang) * 160)
+    const hi = Math.round(40 + lit * 190), lo = Math.round(14 + lit * 60)
+    gr.addColorStop(0, `rgba(${hi - 12},${hi - 4},${hi + 14},0.95)`)
+    gr.addColorStop(1, `rgba(${lo},${lo + 6},${lo + 18},0.95)`)
+    poly(c.pts); g.fillStyle = gr; g.fill()
+    // cut-glass edge: dark seam, then a thin bright bevel just inside it
+    g.lineJoin = 'round'
+    poly(c.pts); g.strokeStyle = 'rgba(0,0,0,0.85)'; g.lineWidth = 5; g.stroke()
+    g.save(); g.translate(-1.2, -1.2)
+    poly(c.pts); g.strokeStyle = `rgba(225,236,255,${0.35 + lit * 0.6})`; g.lineWidth = 1.6; g.stroke()
+    g.restore()
+  }
+
+  // the punched-in hole, with a jagged lip
+  const holePts = []
+  rays.forEach((a, i) => { holePts.push(P(a, hole[i])); holePts.push(P(a + 0.24, hole[i] * (0.75 + rnd() * 0.2))) })
+  poly(holePts); g.fillStyle = '#000'; g.fill()
+  g.save(); g.translate(1.5, 1.5); poly(holePts); g.strokeStyle = 'rgba(200,215,240,0.55)'; g.lineWidth = 2; g.stroke(); g.restore()
+  // broken LED chip down inside the hole
+  g.save(); g.translate(IX + 4, IY + 6); g.rotate(0.5)
+  g.fillStyle = '#20232a'; g.fillRect(-14, -14, 28, 28)
+  g.fillStyle = '#3a3e47'; g.fillRect(-14, -14, 28, 4)
+  g.restore()
+
+  // hairline fractures running through the pieces
+  g.lineCap = 'round'
+  for (let k = 0; k < 26; k++) {
+    let a = rnd() * Math.PI * 2, r = R * (0.3 + rnd() * 0.6)
+    let [x, y] = P(a, r)
+    g.beginPath(); g.moveTo(x, y)
+    for (let s = 0; s < 3; s++) { a += (rnd() - 0.5) * 0.6; r += 10 + rnd() * 22; [x, y] = P(a, Math.min(r, R * 1.3)); g.lineTo(x, y) }
+    g.strokeStyle = `rgba(220,232,255,${0.15 + rnd() * 0.3})`; g.lineWidth = 0.8; g.stroke()
+  }
+
+  // a few sharp glints where light catches a broken edge
+  for (let k = 0; k < 6; k++) {
+    const c = cells[Math.floor(rnd() * cells.length)].pts[0]
+    const gl = g.createRadialGradient(c[0], c[1], 0, c[0], c[1], 16)
+    gl.addColorStop(0, 'rgba(255,255,255,0.95)'); gl.addColorStop(1, 'rgba(255,255,255,0)')
+    g.fillStyle = gl; g.fillRect(c[0] - 16, c[1] - 16, 32, 32)
+  }
+
+  // keep everything inside the round cover
+  g.globalCompositeOperation = 'destination-in'
+  g.fillStyle = '#000'
+  g.beginPath(); g.arc(C, C, R, 0, Math.PI * 2); g.fill()
+
+  const tex = new THREE.CanvasTexture(cv)
+  tex.colorSpace = THREE.SRGBColorSpace
+  tex.anisotropy = 4
+  return tex
 }
-const shards = makeShards()
-const shardMat = (
-  <meshPhysicalMaterial color="#a9bbd6" metalness={0.35} roughness={0.02} clearcoat={1} clearcoatRoughness={0} transparent opacity={0.62} envMapIntensity={5} side={THREE.DoubleSide} />
-)
+
+function SmashedCover() {
+  const tex = useMemo(makeSmashTexture, [])
+  return (
+    <group position={[0, 0, 0.009]}>
+      {/* metal bezel the glass sat in */}
+      <mesh>
+        <torusGeometry args={[0.078, 0.007, 12, 48]} />
+        <meshStandardMaterial color="#9da3ad" metalness={1} roughness={0.25} />
+      </mesh>
+      <mesh>
+        <circleGeometry args={[0.078, 48]} />
+        <meshPhysicalMaterial map={tex} emissiveMap={tex} emissive="#ffffff" emissiveIntensity={0.55} transparent roughness={0.08} metalness={0.2} clearcoat={1} clearcoatRoughness={0} envMapIntensity={1.4} />
+      </mesh>
+    </group>
+  )
+}
 
 export default function Glasses3D({ state = 'recording', ledRef, groupRef, ...props }) {
   const recording = state === 'recording'
@@ -283,28 +377,8 @@ export default function Glasses3D({ state = 'recording', ledRef, groupRef, ...pr
         <sprite ref={glow} scale={[0.2, 0.2, 1]} position={[0, 0, 0.01]}>
           <spriteMaterial map={glowTex} transparent depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
         </sprite>
-        {/* damaged light: the glass cover smashed inward into tilted shards */}
-        {state === 'damaged' && (
-          <group position={[0, 0, 0.008]} scale={1.65}>
-            <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -0.004]}>
-              <cylinderGeometry args={[0.052, 0.046, 0.006, 9]} />
-              <meshStandardMaterial color="#010102" roughness={1} />
-            </mesh>
-            {shards.map((sh, i) => (
-              <group key={i} rotation={[0, 0, sh.ang]}>
-                <group position={[sh.rOut, 0, 0.012]} rotation={[sh.twist, sh.tilt, 0]}>
-                  <group position={[-sh.rOut, 0, 0]}>
-                    <mesh geometry={sh.geo}>{shardMat}</mesh>
-                    {/* bright broken edges, like light catching cut glass */}
-                    <lineSegments geometry={sh.edges}>
-                      <lineBasicMaterial color="#eef4ff" transparent opacity={0.85} toneMapped={false} />
-                    </lineSegments>
-                  </group>
-                </group>
-              </group>
-            ))}
-          </group>
-        )}
+        {/* damaged light: smashed-in glass cover over the LED */}
+        {state === 'damaged' && <SmashedCover />}
         {state === 'covered' && (
           <mesh position={[0, 0, 0.02]} rotation={[0, 0, -0.25]}>
             <boxGeometry args={[0.13, 0.09, 0.025]} />

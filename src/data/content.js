@@ -89,7 +89,7 @@ export const ledStates = {
   recording: { tag: 'CAPTURE LIGHT ON', tone: 'text-white', text: 'The white light is on: a photo, video, or livestream is being captured right now.' },
   covered: { tag: 'LIGHT COVERED', tone: 'text-amber-400', text: 'The light is covered, so the glasses block capture until it is uncovered.' },
   // Meta's mandatory update, July 2026 (follow-up for mid-recording, August 2026)
-  damaged: { tag: 'LIGHT DAMAGED', tone: 'text-red-400', text: "A recent software update shuts the camera off if the light is damaged, drilled out or removed. The glasses can't take photos or video until they're repaired." },
+  damaged: { tag: 'LIGHT DAMAGED', tone: 'text-red-400', text: "A recent software update permanently disables the camera if the light is damaged, drilled out or removed, so the glasses can no longer take photos or video." },
 }
 
 export const alsoTracked = [
@@ -167,6 +167,7 @@ export const sources = [
   'Sammy Gecsoyler, “‘I’ve Definitely Lost Followers’: Influencers Face Backlash Over Meta ‘Pervert Glasses’ Content,” The Guardian, Aug. 9, 2026.',
   'Matt Growcoot, “UK Venues Ban Meta Smart Glasses En Masse,” PetaPixel, Aug. 10, 2026.',
   'Meta, “Company Info” and “Meta AI Glasses: Ray-Ban Meta & Oakley Meta,” Meta.com, 2026.',
+  'Katie Notopoulos and Ben Shimkus, “Meta Bricks Cameras on Thousands of AI Glasses Over Tampering,” Business Insider, Sept. 2, 2026.',
   'K. Shah, “Who’s Ready for Smart Glasses — and How Can Brands Reach Them?” YouGov, June 30, 2025.',
   'Sophie Tanno and Lisa Eadicicco, “‘Turn the Cameras Off’: London’s Growing Privacy Pushback Against Smart Glasses,” CNN, Sept. 22, 2026.',
 ]
