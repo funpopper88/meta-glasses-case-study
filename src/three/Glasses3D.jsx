@@ -161,9 +161,35 @@ function OnFront({ x, y, lift = 0.004, children, groupRef }) {
   )
 }
 
-// Damaged-light cracks: [angle, length, branch side]
-const CRACKS = [[0.25, 0.06, 0], [1.35, 0.1, 1], [2.25, 0.1, -1], [3.25, 0.085, 1], [4.35, 0.1, -1], [5.5, 0.065, 0]]
-const crackMat = <meshStandardMaterial color="#dfe3ea" emissive="#9aa1ad" emissiveIntensity={0.7} metalness={0.5} roughness={0.25} />
+// Smashed capture-light cover: wedge-shaped glass shards around a hole,
+// each pushed in and twisted so they catch the light at different angles
+function makeShards() {
+  let seed = 7
+  const rnd = () => ((seed = (seed * 16807) % 2147483647) / 2147483647)
+  const n = 9
+  const out = []
+  let a = 0
+  for (let i = 0; i < n; i++) {
+    const span = ((Math.PI * 2) / n) * (0.7 + rnd() * 0.6)
+    const rIn = 0.008 + rnd() * 0.012
+    const rOut = 0.044 + rnd() * 0.012
+    const half = span / 2 - (0.02 + rnd() * 0.07) // uneven gaps between shards
+    const shape = new THREE.Shape()
+    shape.moveTo(rIn, (rnd() - 0.5) * 0.006)
+    shape.lineTo(Math.cos(-half) * rOut, Math.sin(-half) * rOut)
+    shape.lineTo(rOut * (1.02 + rnd() * 0.06), (rnd() - 0.5) * 0.01)
+    shape.lineTo(Math.cos(half) * rOut, Math.sin(half) * rOut)
+    shape.closePath()
+    const geo = new THREE.ExtrudeGeometry(shape, { depth: 0.003, bevelEnabled: false })
+    out.push({ geo, edges: new THREE.EdgesGeometry(geo), ang: a + span / 2, rOut, tilt: -(0.12 + rnd() * 0.3), twist: (rnd() - 0.5) * 1.4 })
+    a += span
+  }
+  return out
+}
+const shards = makeShards()
+const shardMat = (
+  <meshPhysicalMaterial color="#a9bbd6" metalness={0.35} roughness={0.02} clearcoat={1} clearcoatRoughness={0} transparent opacity={0.62} envMapIntensity={5} side={THREE.DoubleSide} />
+)
 
 export default function Glasses3D({ state = 'recording', ledRef, groupRef, ...props }) {
   const recording = state === 'recording'
@@ -250,42 +276,33 @@ export default function Glasses3D({ state = 'recording', ledRef, groupRef, ...pr
           <cylinderGeometry args={[0.04, 0.04, 0.008, 40]} />
           <meshStandardMaterial color="#2c2f36" metalness={1} roughness={0.3} />
         </mesh>
-        <mesh ref={led} scale={[1, 1, 0.5]} position={[0, 0, 0.006]}>
+        <mesh ref={led} visible={state !== 'damaged'} scale={[1, 1, 0.5]} position={[0, 0, 0.006]}>
           <sphereGeometry args={[0.018, 24, 24]} />
           <meshPhysicalMaterial color="#14161b" emissive="#f4f7ff" emissiveIntensity={0} roughness={0.1} clearcoat={1} toneMapped={false} />
         </mesh>
         <sprite ref={glow} scale={[0.2, 0.2, 1]} position={[0, 0, 0.01]}>
           <spriteMaterial map={glowTex} transparent depthWrite={false} blending={THREE.AdditiveBlending} toneMapped={false} />
         </sprite>
-        {/* damaged light: shattered pit with bright cracks spreading across the frame */}
+        {/* damaged light: the glass cover smashed inward into tilted shards */}
         {state === 'damaged' && (
-          <group position={[0, 0, 0.008]}>
-            <mesh rotation={[Math.PI / 2, 0, 0]}>
-              <cylinderGeometry args={[0.05, 0.042, 0.008, 7]} />
-              <meshStandardMaterial color="#020203" roughness={1} />
+          <group position={[0, 0, 0.008]} scale={1.65}>
+            <mesh rotation={[Math.PI / 2, 0, 0]} position={[0, 0, -0.004]}>
+              <cylinderGeometry args={[0.052, 0.046, 0.006, 9]} />
+              <meshStandardMaterial color="#010102" roughness={1} />
             </mesh>
-            {/* jagged rim of broken plastic */}
-            <mesh rotation={[0, 0, 0.2]}>
-              <torusGeometry args={[0.05, 0.006, 4, 9]} />
-              <meshStandardMaterial color="#c9ced8" emissive="#8a909c" emissiveIntensity={0.5} metalness={0.6} roughness={0.3} />
-            </mesh>
-            {CRACKS.map(([ang, len, branch], i) => {
-              const r0 = 0.05
-              return (
-                <group key={i} rotation={[0, 0, ang]}>
-                  <mesh position={[r0 + len / 2, 0, 0.003]}>
-                    <boxGeometry args={[len, 0.006, 0.004]} />
-                    {crackMat}
-                  </mesh>
-                  {branch && (
-                    <mesh position={[r0 + len * 0.6 + 0.025, 0.015 * branch, 0.003]} rotation={[0, 0, 0.6 * branch]}>
-                      <boxGeometry args={[0.05, 0.0045, 0.004]} />
-                      {crackMat}
-                    </mesh>
-                  )}
+            {shards.map((sh, i) => (
+              <group key={i} rotation={[0, 0, sh.ang]}>
+                <group position={[sh.rOut, 0, 0.012]} rotation={[sh.twist, sh.tilt, 0]}>
+                  <group position={[-sh.rOut, 0, 0]}>
+                    <mesh geometry={sh.geo}>{shardMat}</mesh>
+                    {/* bright broken edges, like light catching cut glass */}
+                    <lineSegments geometry={sh.edges}>
+                      <lineBasicMaterial color="#eef4ff" transparent opacity={0.85} toneMapped={false} />
+                    </lineSegments>
+                  </group>
                 </group>
-              )
-            })}
+              </group>
+            ))}
           </group>
         )}
         {state === 'covered' && (
