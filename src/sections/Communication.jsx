@@ -86,6 +86,11 @@ export default function Communication() {
             <p className="mt-4 text-sm text-white/60" aria-live="polite">
               <span className={`font-mono font-semibold ${s.tone}`}>● {s.tag}</span>
               <span className="mt-1 block">{s.text}</span>
+              {s.source && (
+                <a href={s.sourceUrl} target="_blank" rel="noreferrer" className="mt-3 block font-mono text-[10px] uppercase tracking-widest text-white/35 transition-colors hover:text-blue-300">
+                  Source: {s.source}
+                </a>
+              )}
             </p>
           </div>
         </div>

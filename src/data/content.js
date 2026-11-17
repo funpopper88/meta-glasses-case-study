@@ -89,7 +89,7 @@ export const ledStates = {
   recording: { tag: 'CAPTURE LIGHT ON', tone: 'text-white', text: 'The white light is on: a photo, video, or livestream is being captured right now.' },
   covered: { tag: 'LIGHT COVERED', tone: 'text-amber-400', text: 'The light is covered, so the glasses block capture until it is uncovered.' },
   // Meta's mandatory update, July 2026 (follow-up for mid-recording, August 2026)
-  damaged: { tag: 'LIGHT DAMAGED', tone: 'text-red-400', text: "A recent software update permanently disables the camera if the light is damaged, drilled out or removed, so the glasses can no longer take photos or video." },
+  damaged: { tag: 'LIGHT DAMAGED', tone: 'text-red-400', text: "A recent software update permanently disables the camera if the light is damaged, drilled out or removed, so the glasses can no longer take photos or video.", source: 'Business Insider, Sept. 2, 2026', sourceUrl: 'https://www.businessinsider.com/meta-glasses-camera-disabled-tampering-recording-light-update-2026-9' },
 }
 
 export const alsoTracked = [
