@@ -68,14 +68,14 @@ export default function Communication() {
           <div>
             <p className="font-mono text-xs uppercase tracking-widest text-white/40">Core message</p>
             <p className="mt-2 text-lg text-white/80">Every channel of communication teaches people how to tell when glasses are recording.</p>
-            <div className="mt-6 flex flex-wrap gap-2" role="radiogroup" aria-label="Glasses state">
+            <div className="mt-6 grid max-w-sm grid-cols-2 gap-2" role="radiogroup" aria-label="Glasses state">
               {modes.map(([key, label]) => (
                 <button
                   key={key}
                   role="radio"
                   aria-checked={mode === key}
                   onClick={() => setMode(key)}
-                  className={`rounded-full border px-4 py-2 text-sm transition-all ${
+                  className={`rounded-full border px-4 py-2 text-center text-sm transition-all ${
                     mode === key ? 'border-blue-300/50 bg-[#13306e] text-white' : 'border-white/10 text-white/55 hover:border-white/25 hover:text-white'
                   }`}
                 >
